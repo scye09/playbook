@@ -7,6 +7,7 @@ XML = False
 JSON = True
 DEBUG = True
 ALLOW_UNKNOWN = True
+HATEOAS = False
 
 annotationSchema = {
 
@@ -14,7 +15,7 @@ annotationSchema = {
 
 annotations = {
     'schema': annotationSchema,
-    
+
 }
 
 DOMAIN = {

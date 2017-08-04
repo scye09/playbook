@@ -37,30 +37,21 @@
           },
 
           urls: {
-               create:  '/store',
+               create:  '/',
                update:  '/update/:id',
                destroy: '/delete/:id',
                search:  '/search'
            },
         });
 
-  //       $.ajax({
-  //   url: '/annotations/store',
-  //   type: "POST",
-  //   datatype: "json",
-  //
-  //   success: function(data) {
-  //     var xhr = new XMLHttpRequest();
-  //     var new_data = json.stringify(data);
-  //     xhr.open('POST', '/annotations', true);
-  //     xhr.setRequestHeader('Content-Type', 'application/json');
-  //     xhr.send(new_data.toString());
-  //   },
-  //   error: function(XMLHttpRequest, textStatus, errorThrown) {
-  //                   alert("Status: " + textStatus);
-  //                   alert("Error: " + errorThrown);
-  //                   console.log("annotation failed!");
-  //               }
-  // });
+function get_query() {
+  var xhr = new XMLHttpRequest();
+  var new_url = '/annotations?where={"uri":' + '"' + originurl +'"'+ '}';
+  xhr.open('GET', new_url, true);
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.send();
+  return xhr.responseText;
 
-  });
+};
+
+});
