@@ -1,5 +1,6 @@
 from eve import Eve
 from flask import render_template, render_template_string, request, current_app as app
+import json
 app = Eve(__name__, template_folder='templates')
 
 @app.route('/test')
@@ -9,6 +10,10 @@ def test():
 @app.route('/test.js')
 def test_js():
     return render_template('test.js')
+
+# @app.route('/annotations/store')
+# def store_annotation():
+#     return render_template('index.html')
 
 #@app.route('/annotations/annotations')
 #def store():
