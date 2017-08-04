@@ -6,7 +6,6 @@ from flask_pymongo import PyMongo
 import requests
 
 app = Eve(__name__, template_folder='templates')
-# mongo = PyMongo(app)
 
 @app.route('/test')
 def test():
@@ -18,21 +17,16 @@ def test_js():
 
 @app.route('/annotations/search')
 def search_annotation():
-    # database = mongo.db.eve
-    # if database:
-    #     print('dabase not empty')
-    # params = dict(request.args.items())
-    # print(params['uri'])
-    # url='/annotations?where={"uri": "http://localhost:5000/test"}'
-    output = []
-    # for s in database.find({'uri': params['uri']}):
-    #     output.append(s)
-    # print(len(output))
     response = requests.get('http://localhost:5000/annotations?where={"uri": "http://localhost:5000/test"}')
     text = response.json()
-    print(text['_items'])
     items = text['_items']
     return jsonify({"total": len(items), "rows": items})
+
+@app.route('/annotations/update')
+def update_annotation():
+    data = []
+    print('hello')
+    return jsonify(data)
 
 #@app.route('/annotations/annotations')
 #def store():

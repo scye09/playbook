@@ -1,10 +1,6 @@
   jQuery(function ($) {
 
-      var annotation = $(document.body).annotator()
-                                        .annotator('setupPlugins', {}, {
-                                          Store: false,
-                                          Auth: false,
-                                        });
+      var annotation = $(document.body).annotator();
       /*annotation.annotator("loadAnnotations", {
       "id": "39fc339cf058bd22176771b3e3187329",
       "created": "2011-05-24T18:52:08.036814",
@@ -43,15 +39,5 @@
                search:  '/search'
            },
         });
-
-function get_query() {
-  var xhr = new XMLHttpRequest();
-  var new_url = '/annotations?where={"uri":' + '"' + originurl +'"'+ '}';
-  xhr.open('GET', new_url, true);
-  xhr.setRequestHeader('Content-Type', 'application/json');
-  xhr.send();
-  return xhr.responseText;
-
-};
 
 });
