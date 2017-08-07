@@ -11,3 +11,9 @@ services:
       - db
   db:
     image: mongo
+    volumes:
+      - anno-db:/data/db
+
+volumes:
+  anno-db:
+    external: true

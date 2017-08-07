@@ -7,14 +7,30 @@ XML = False
 JSON = True
 DEBUG = True
 ALLOW_UNKNOWN = True
+HATEOAS = False
+IF_MATCH = False
 
 annotationSchema = {
+
 }
 
+accountsSchema = {
+    'userid':{
+        'type': 'string'
+    },
+    'password': {
+        'type': 'string'
+    },
+    'roles': {
+        'type': 'list'
+    }
+}
 
 annotations = {
     'schema': annotationSchema,
+
 }
+
 
 
 DOMAIN = {
