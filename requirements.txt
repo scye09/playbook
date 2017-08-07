@@ -1,2 +1,4 @@
 eve
 flask-cors
+requests
+py-bcrypt
