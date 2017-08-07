@@ -1,20 +1,7 @@
   jQuery(function ($) {
 
       var annotation = $(document.body).annotator();
-      /*annotation.annotator("loadAnnotations", {
-      "id": "39fc339cf058bd22176771b3e3187329",
-      "created": "2011-05-24T18:52:08.036814",
-      "updated": "2011-05-26T12:17:05.012544",
-      "text": "This is a comment",
-      "quote": "Lorem",
-      "ranges":
-      [{
-        "start": "/div[1]",
-        "end": "/div[1]",
-        "startOffset": 17,
-        "endOffset": 22
-      }]
-    });*/
+      
       annotation.annotator('addPlugin', 'Store', {
           // The endpoint of the store on your server.
           prefix: '/annotations',
@@ -34,8 +21,8 @@
 
           urls: {
                create:  '/',
-               update:  '/update/:id',
-               destroy: '/delete/:id',
+               update:  '/:id',
+               destroy: '/:id',
                search:  '/search'
            },
         });

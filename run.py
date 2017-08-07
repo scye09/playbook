@@ -4,8 +4,19 @@ import json
 from flask import jsonify
 from flask_pymongo import PyMongo
 import requests
+from bson.objectid import ObjectId
 
 app = Eve(__name__, template_folder='templates')
+mongo = app.data.driver
+
+def post_annotation_callback(docs):
+
+    for doc in docs:
+        doc['id'] = str(doc['_id'])
+        f = {'_id': doc['_id']}
+        mongo.db.annotations.update(f, doc)
+
+app.on_inserted_annotations += post_annotation_callback
 
 @app.route('/test')
 def test():
@@ -22,15 +33,6 @@ def search_annotation():
     items = text['_items']
     return jsonify({"total": len(items), "rows": items})
 
-@app.route('/annotations/update')
-def update_annotation():
-    data = []
-    print('hello')
-    return jsonify(data)
-
-#@app.route('/annotations/annotations')
-#def store():
-#    return render_template('store.html')
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", threaded=True)

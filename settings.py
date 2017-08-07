@@ -8,6 +8,7 @@ JSON = True
 DEBUG = True
 ALLOW_UNKNOWN = True
 HATEOAS = False
+IF_MATCH = False
 
 annotationSchema = {
 
