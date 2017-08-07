@@ -3,6 +3,8 @@ MONGO_PORT = 27017
 MONGO_DBNAME = "eve"
 RESOURCE_METHODS = ['GET', 'POST']
 ITEM_METHODS = ['GET', 'PATCH', 'PUT', 'DELETE']
+PUBLIC_METHODS = ['GET']
+PUBLIC_ITEM_METHODS = ['GET']
 XML = False
 JSON = True
 DEBUG = True
@@ -22,7 +24,10 @@ accountsSchema = {
         'type': 'string'
     },
     'roles': {
-        'type': 'list'
+        'type': 'list',
+        'schema': {
+            'type': 'string'
+        }
     }
 }
 
@@ -31,8 +36,12 @@ annotations = {
 
 }
 
+accounts = {
+    'schema': accountsSchema
+}
 
 
 DOMAIN = {
     'annotations': annotations,
+    'accounts': accounts
     }

@@ -6,9 +6,8 @@ from flask_pymongo import PyMongo
 import requests
 from bson.objectid import ObjectId
 from eve.io.base import BaseJSONEncoder
-import datetime
-import jwt
-#import bcrypt
+from datetime import datetime
+import bcrypt
 from eve.auth import BasicAuth
 
 class JSONEncoder(json.JSONEncoder):
@@ -21,21 +20,21 @@ class JSONEncoder(json.JSONEncoder):
 
 
 class UserAuth(BasicAuth):
-    def check_auth(self, username, password, allowed_roles, resource, method):
-        accounts = app.data.driver.db['accounts']
-        lookup = {'username': username}
-        if allowed_roles:
-            lookup['roles'] = {'$in': allowed_roles}
-        account = accounts.find_one(lookup)
-        return account and \
-            password == account['password']
+   def check_auth(self, userid, password, allowed_roles, resource, method):
+       accounts = app.data.driver.db['accounts']
+       lookup = {'userid': userid}
+       #if allowed_roles:
+        #   lookup['roles'] = {'$in': allowed_roles}
+       account = accounts.find_one(lookup)
+       return account and \
+           bcrypt.hashpw(password, account['salt']) == account['password']
 
 def create_user(documents):
-    for document in documents:
-        document['salt'] = bcrypt.gensalt()
-        password = document['password']
-        password = bcrypt.hashpw(password, document['salt'])
-        document['password'] = password
+   for document in documents:
+       document['salt'] = bcrypt.gensalt()
+       password = document['password']
+       password = bcrypt.hashpw(password, document['salt'])
+       document['password'] = password
 
 def post_annotation_callback(docs):
     for doc in docs:
@@ -43,7 +42,7 @@ def post_annotation_callback(docs):
         f = {'_id': doc['_id']}
         mongo.db.annotations.update(f, doc)
 
-app = Eve(__name__, template_folder='templates')
+app = Eve(__name__, auth=UserAuth, template_folder='templates')
 mongo = app.data.driver
 
 app.on_inserted_annotations += post_annotation_callback
