@@ -10,7 +10,6 @@ app = Eve(__name__, template_folder='templates')
 mongo = app.data.driver
 
 def post_annotation_callback(docs):
-
     for doc in docs:
         doc['id'] = str(doc['_id'])
         f = {'_id': doc['_id']}
@@ -28,7 +27,12 @@ def test_js():
 
 @app.route('/annotations/search')
 def search_annotation():
-    response = requests.get('http://localhost:5000/annotations?where={"uri": "http://localhost:5000/test"}')
+    params = dict(request.args.items())
+    uri = params['uri']
+    last_slash = uri.rfind('/')
+    base_url = uri[:(last_slash+1)]
+    query_url = base_url + 'annotations?where={"uri": "' + uri + '"}'
+    response = requests.get(query_url)
     text = response.json()
     items = text['_items']
     return jsonify({"total": len(items), "rows": items})

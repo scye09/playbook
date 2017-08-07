@@ -16,7 +16,6 @@ annotationSchema = {
 
 annotations = {
     'schema': annotationSchema,
-
 }
 
 DOMAIN = {
