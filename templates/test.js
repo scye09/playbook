@@ -1,7 +1,7 @@
   jQuery(function ($) {
 
       var annotation = $(document.body).annotator();
-      
+
       annotation.annotator('addPlugin', 'Store', {
           // The endpoint of the store on your server.
           prefix: '/annotations',
@@ -25,6 +25,17 @@
                destroy: '/:id',
                search:  '/search'
            },
+        });
+
+
+        annotation.annotator('addPlugin', 'Permissions', {
+          user: 'Alice',
+          permissions: {
+            'read': [],
+            'update': [],
+            'delete': [],
+            'admin': ['Alice']
+          }
         });
 
 });
