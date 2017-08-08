@@ -28,14 +28,7 @@
         });
 
 
-        // annotation.annotator('addPlugin', 'Permissions', {
-        //   user: 'admin',
-        //   permissions: {
-        //     'read': [],
-        //     'update': [],
-        //     'delete': [],
-        //     'admin': ['admin']
-        //   }
-        // });
+        annotation.annotator('addPlugin', 'Permissions', {}
+        );
 
 });
