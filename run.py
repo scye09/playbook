@@ -3,12 +3,10 @@ from flask import redirect, render_template, render_template_string, request, cu
 import json
 from flask import jsonify
 from flask_pymongo import PyMongo
-# import requests
 from bson.objectid import ObjectId
 from datetime import datetime
-
-app = Eve(__name__, template_folder='templates')
-mongo = app.data.driver
+from eve.auth import BasicAuth
+import bcrypt
 
 class JSONEncoder(json.JSONEncoder):
     def default(self, o):
@@ -18,13 +16,32 @@ class JSONEncoder(json.JSONEncoder):
             return o.__str__()
         return json.JSONEncoder.default(self, o)
 
+class UserAuth(BasicAuth):
+   def check_auth(self, userid, password, allowed_roles, resource, method):
+       accounts = app.data.driver.db['accounts']
+       lookup = {'userid': userid}
+       account = accounts.find_one(lookup)
+       return account and \
+           bcrypt.hashpw(password, account['salt']) == account['password']
+
+def create_user(documents):
+   for document in documents:
+       document['salt'] = bcrypt.gensalt()
+       password = document['password']
+       password = bcrypt.hashpw(password, document['salt'])
+       document['password'] = password
+
 def post_annotation_callback(docs):
     for doc in docs:
         doc['id'] = str(doc['_id'])
         f = {'_id': doc['_id']}
         mongo.db.annotations.update(f, doc)
 
+app = Eve(__name__, template_folder='templates', auth=UserAuth)
+mongo = app.data.driver
+
 app.on_inserted_annotations += post_annotation_callback
+app.on_insert_accounts += create_user
 
 @app.route('/test')
 def test():

@@ -18,6 +18,27 @@ annotations = {
     'schema': annotationSchema,
 }
 
+accountsSchema = {
+    'userid':{
+        'type': 'string'
+    },
+    'password': {
+        'type': 'string'
+    },
+    'roles': {
+        'type': 'list',
+        'schema': {
+            'type': 'string'
+        }
+    }
+}
+
+
+accounts = {
+    'schema': accountsSchema
+}
+
 DOMAIN = {
     'annotations': annotations,
+    'accounts': accounts
     }

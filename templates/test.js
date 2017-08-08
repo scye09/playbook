@@ -29,12 +29,12 @@
 
 
         annotation.annotator('addPlugin', 'Permissions', {
-          user: 'Alice',
+          user: 'admin',
           permissions: {
             'read': [],
             'update': [],
             'delete': [],
-            'admin': ['Alice']
+            'admin': ['admin']
           }
         });
 
