@@ -5,7 +5,7 @@ from flask import jsonify
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
 from datetime import datetime
-from eve.auth import BasicAuth
+from eve.auth import BasicAuth, requires_auth
 import bcrypt
 
 class JSONEncoder(json.JSONEncoder):
@@ -32,28 +32,16 @@ def create_user(documents):
        password = bcrypt.hashpw(password, document['salt'])
        document['password'] = password
 
-def post_annotation_callback(docs):
+def post_annotation(docs):
     for doc in docs:
         doc['id'] = str(doc['_id'])
-        user_id = app.auth.get_request_auth_value()
-        lookup = {'_id': user_id}
-        accounts = app.data.driver.db['accounts']
-        user = accounts.find_one(lookup)
-        doc['user'] = user['userid']
-        doc['userString'] = user['userid']
-        permissions = {}
-        permissions['read'] = []
-        permissions['update'] = [user['userid']]
-        permissions['delete'] = [user['userid']]
-        permissions['admin'] = [user['userid']]
-        doc['permissions'] = permissions
         f = {'_id': doc['_id']}
         mongo.db.annotations.update(f, doc)
 
 app = Eve(__name__, template_folder='templates', auth=UserAuth)
 mongo = app.data.driver
 
-app.on_inserted_annotations += post_annotation_callback
+app.on_inserted_annotations += post_annotation
 app.on_insert_accounts += create_user
 
 @app.route('/test')
@@ -65,6 +53,7 @@ def test_js():
     return render_template('test.js')
 
 @app.route('/annotations/search')
+@requires_auth('annotations')
 def search_annotation():
     params = dict(request.args.items())
     uri = params['uri']
@@ -82,6 +71,15 @@ def login():
 @app.route('/login.js')
 def render_login_js():
     return render_template('login.js')
+
+@app.route('/getcurrentuser')
+@requires_auth('annotations')
+def get_current_user():
+    user_id = app.auth.get_request_auth_value()
+    lookup = {'_id': user_id}
+    accounts = app.data.driver.db['accounts']
+    user = accounts.find_one(lookup)
+    return json.dumps(user['userid'])
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", threaded=True)

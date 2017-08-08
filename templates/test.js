@@ -2,6 +2,12 @@
 
       var annotation = $(document.body).annotator();
 
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', '/getcurrentuser', false);
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.send();
+      user_id = xhr.responseText;
+
       annotation.annotator('addPlugin', 'Store', {
           // The endpoint of the store on your server.
           prefix: '/annotations',
@@ -28,7 +34,16 @@
         });
 
 
-        annotation.annotator('addPlugin', 'Permissions', {}
+        annotation.annotator('addPlugin', 'Permissions', {
+          user: user_id,
+          permissions: {
+    'read':   [],
+    'update': [user_id],
+    'delete': [user_id],
+    'admin':  [user_id]
+  }
+
+        }
         );
 
 });
