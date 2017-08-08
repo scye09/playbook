@@ -7,6 +7,7 @@ from bson.objectid import ObjectId
 from datetime import datetime
 from eve.auth import BasicAuth
 import bcrypt
+from flask import current_app
 
 class JSONEncoder(json.JSONEncoder):
     def default(self, o):
@@ -21,8 +22,9 @@ class UserAuth(BasicAuth):
        accounts = app.data.driver.db['accounts']
        lookup = {'userid': userid}
        account = accounts.find_one(lookup)
-       return account and \
-           bcrypt.hashpw(password, account['salt']) == account['password']
+       if account and bcrypt.hashpw(password, account['salt']) == account['password']:
+           self.set_request_auth_value(account['_id'])
+       return account and bcrypt.hashpw(password, account['salt']) == account['password']
 
 def create_user(documents):
    for document in documents:
@@ -34,6 +36,7 @@ def create_user(documents):
 def post_annotation_callback(docs):
     for doc in docs:
         doc['id'] = str(doc['_id'])
+        doc['user'] = current_app.auth.get_request_auth_value()
         f = {'_id': doc['_id']}
         mongo.db.annotations.update(f, doc)
 
