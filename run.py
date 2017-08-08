@@ -77,6 +77,14 @@ def search_annotation():
     # items = text['_items']
     return JSONEncoder().encode({"total": len(query_items), "rows": query_items})
 
+@app.route('/login')
+def login():
+    return render_template('login.html')
+
+@app.route('/login.js')
+def render_login_js():
+    return render_template('login.js')
+
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", threaded=True)
