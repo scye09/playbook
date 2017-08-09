@@ -3,12 +3,11 @@ from flask import redirect, render_template, render_template_string, request, cu
 import json
 from flask import jsonify
 from flask_pymongo import PyMongo
-import requests
 from bson.objectid import ObjectId
-from eve.io.base import BaseJSONEncoder
 from datetime import datetime
+from eve.auth import BasicAuth, requires_auth
 import bcrypt
-from eve.auth import BasicAuth
+import requests
 
 class JSONEncoder(json.JSONEncoder):
     def default(self, o):
@@ -18,16 +17,14 @@ class JSONEncoder(json.JSONEncoder):
             return o.__str__()
         return json.JSONEncoder.default(self, o)
 
-
 class UserAuth(BasicAuth):
    def check_auth(self, userid, password, allowed_roles, resource, method):
        accounts = app.data.driver.db['accounts']
        lookup = {'userid': userid}
-       #if allowed_roles:
-        #   lookup['roles'] = {'$in': allowed_roles}
        account = accounts.find_one(lookup)
-       return account and \
-           bcrypt.hashpw(password, account['salt']) == account['password']
+       if account and bcrypt.hashpw(password, account['salt']) == account['password']:
+           self.set_request_auth_value(account['_id'])
+       return account and bcrypt.hashpw(password, account['salt']) == account['password']
 
 def create_user(documents):
    for document in documents:
@@ -36,19 +33,19 @@ def create_user(documents):
        password = bcrypt.hashpw(password, document['salt'])
        document['password'] = password
 
-def post_annotation_callback(docs):
+def post_annotation(docs):
     for doc in docs:
         doc['id'] = str(doc['_id'])
         f = {'_id': doc['_id']}
-        mongo.db.annotations.update(f, doc)
+        app.data.driver.db['annotations'].update(f, doc)
 
-app = Eve(__name__, auth=UserAuth, template_folder='templates')
-mongo = app.data.driver
+app = Eve(__name__, template_folder='templates', auth=UserAuth)
 
-app.on_inserted_annotations += post_annotation_callback
+app.on_inserted_annotations += post_annotation
 app.on_insert_accounts += create_user
 
 @app.route('/test')
+# @requires_auth('annotations')
 def test():
     return render_template('index.html')
 
@@ -57,24 +54,16 @@ def test_js():
     return render_template('test.js')
 
 @app.route('/annotations/search')
+@requires_auth('annotations')
 def search_annotation():
-
     params = dict(request.args.items())
     uri = params['uri']
-    f = {'uri': uri}
-    query_results = mongo.db.annotations.find(f)
+    lookup = {'uri': uri}
+    annotations = app.data.driver.db['annotations']
+    query_results = annotations.find(lookup)
     query_items = []
     for result in query_results:
         query_items.append(result)
-
-    # query_json = json.dumps(query_items, default=json_util.default)
-
-    # last_slash = uri.rfind('/')
-    # base_url = uri[:(last_slash+1)]
-    # query_url = base_url + 'annotations?where={"uri": "' + uri + '"}'
-    # response = requests.get(query_url)
-    # text = response.json()
-    # items = text['_items']
     return JSONEncoder().encode({"total": len(query_items), "rows": query_items})
 
 @app.route('/login')
@@ -85,6 +74,14 @@ def login():
 def render_login_js():
     return render_template('login.js')
 
+@app.route('/getcurrentuser')
+@requires_auth('annotations')
+def get_current_user():
+    user_id = app.auth.get_request_auth_value()
+    lookup = {'_id': user_id}
+    accounts = app.data.driver.db['accounts']
+    user = accounts.find_one(lookup)
+    return json.dumps(user['userid'])
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", threaded=True)
