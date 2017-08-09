@@ -8,6 +8,14 @@
       xhr.send();
       user_id = xhr.responseText;
 
+      var annotator_save = document.getElementsByClassName("annotator-save");
+      var i;
+      for (i = 0; i < annotator_save.length; i++) {
+        annotator_save[i].addEventListener("click", function() {
+          window.location.reload();
+        });
+      }
+
       annotation.annotator('addPlugin', 'Store', {
           // The endpoint of the store on your server.
           prefix: '/annotations',
