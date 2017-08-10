@@ -17,13 +17,20 @@
           for (i = 0; i < annotations.length; i++) {
             var annotation = annotations[i];
             var paras = document.getElementsByTagName('p');
+            var ranges = annotation.ranges[0];
+            var startOffset = ranges.startOffset;
+            var endOffset = ranges.endOffset;
+            var start = ranges.start;
+            start = "/" + start;
+            var end = ranges.end;
+            end = "/" + end;
+            var d = document.createNSResolver(document.ownerDocument === null ? document.documentElement : document.ownerDocument.documentElement);
+            var startNode = document.evaluate(start, document, d, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+            var endNode = document.evaluate(end, document, d, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
 
-            var startOffset = annotation.ranges[0].startOffset;
-            var endOffset = annotation.ranges[0].endOffset;
             var range = document.createRange();
-            range.setStart(paras[0].childNodes[0], startOffset);
-            range.setEnd(paras[0].childNodes[0], endOffset);
-            range.deleteContents();
+            range.setStart(startNode.firstChild, startOffset);
+            range.setEnd(endNode.firstChild, endOffset);
 
             var el = document.createElement("div");
             el.innerHTML = "[DELETED]";

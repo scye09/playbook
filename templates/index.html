@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="http://assets.annotateit.org/annotator/v1.2.5/annotator.min.css">
     <script src="/test.js"></script>
     <h4>Test</h4>
-    <p id="text">The giant panda (Ailuropoda melanoleuca, literally "black and white cat-foot"; Chinese: 大熊猫;
+    <p>The giant panda (Ailuropoda melanoleuca, literally "black and white cat-foot"; Chinese: 大熊猫;
       pinyin: dà xióng māo, literally "big bear cat"),[4] also known as panda bear or simply panda,
       is a bear[5] native to south central China.[1] It is easily recognized by the large, distinctive
       black patches around its eyes, over the ears, and across its round body. The name "giant panda"
@@ -21,21 +21,26 @@
       Sichuan, but also in neighbouring Shaanxi and Gansu.[9] As a result of farming, deforestation,
       and other development, the giant panda has been driven out of the lowland areas where it once lived.
     </p>
-    <!-- <hr>
+    <hr>
     <div id="test"></div>
     <div>Select some text and press a button to insert text</div>
 <input type="button" onclick="insertHtmlAtSelectionEnd('[BEFORE]', true)" value="Insert before">
-<input type="button" onclick="insertHtmlAtSelectionEnd('[AFTER]', false)" value="Insert after"> -->
+<input type="button" onclick="insertHtmlAtSelectionEnd('[AFTER]', false)" value="Insert after">
+
 
 <script>
 // var range = document.createRange();
+// // range.collapse(true);
 // var textnodes = document.getElementsByTagName("p");
+// var node = textnodes[0].firstChild.parentNode;
+// alert(node.innerHTML);
 // range.setStart(textnodes[0].childNodes[0], 79);
 // range.setEnd(textnodes[0].childNodes[0], 86);
 // var sel = window.getSelection();
 // sel.removeAllRanges();
 // sel.addRange(range);
-// range.collapse(true);
+// range.select();
+
 
 // function insertHtmlAtSelectionEnd(html, isBefore) {
 //   var sel = window.getSelection();
@@ -85,7 +90,7 @@
 //             var saveNode = range.startContainer;
 //             var nodeData = saveNode.data;
 //             var nodeHTML = saveNode.parentElement.innerHTML;
-//             alert(nodeHTML);
+//             // alert(nodeHTML);
 //
 //             // Range.createContextualFragment() would be useful here but was
 //             // until recently non-standard and not supported in all browsers
