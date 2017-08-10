@@ -63,7 +63,9 @@ def search_annotation():
     query_results = annotations.find(lookup)
     query_items = []
     for result in query_results:
-        query_items.append(result)
+        tags = result['tags']
+        if not tags:
+            query_items.append(result)
     return JSONEncoder().encode({"total": len(query_items), "rows": query_items})
 
 @app.route('/login')
@@ -82,6 +84,25 @@ def get_current_user():
     accounts = app.data.driver.db['accounts']
     user = accounts.find_one(lookup)
     return json.dumps(user['userid'])
+
+@app.route('/getdeleteannotations')
+@requires_auth('annotations')
+def get_delete_annotations():
+    data = []
+    user_id = app.auth.get_request_auth_value()
+    lookup = {'_id': user_id}
+    accounts = app.data.driver.db['accounts']
+    user = accounts.find_one(lookup)
+
+    annotations = app.data.driver.db['annotations']
+    tags = ["delete"]
+    lookup = {'tags': tags}
+    replaced_annotations = annotations.find(lookup)
+    for annotation in replaced_annotations:
+        data.append(annotation)
+    # print("Annotations to be replaced: ")
+    # print(data)
+    return JSONEncoder().encode(data);
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", threaded=True)

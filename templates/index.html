@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="http://assets.annotateit.org/annotator/v1.2.5/annotator.min.css">
     <script src="/test.js"></script>
     <h4>Test</h4>
-    <p>The giant panda (Ailuropoda melanoleuca, literally "black and white cat-foot"; Chinese: 大熊猫;
+    <p id="text">The giant panda (Ailuropoda melanoleuca, literally "black and white cat-foot"; Chinese: 大熊猫;
       pinyin: dà xióng māo, literally "big bear cat"),[4] also known as panda bear or simply panda,
       is a bear[5] native to south central China.[1] It is easily recognized by the large, distinctive
       black patches around its eyes, over the ears, and across its round body. The name "giant panda"
@@ -19,6 +19,92 @@
       they may receive honey, eggs, fish, yams, shrub leaves, oranges, or bananas along with specially
       prepared food.[7][8] The giant panda lives in a few mountain ranges in central China, mainly in
       Sichuan, but also in neighbouring Shaanxi and Gansu.[9] As a result of farming, deforestation,
-      and other development, the giant panda has been driven out of the lowland areas where it once lived. </p>
+      and other development, the giant panda has been driven out of the lowland areas where it once lived.
+    </p>
+    <!-- <hr>
+    <div id="test"></div>
+    <div>Select some text and press a button to insert text</div>
+<input type="button" onclick="insertHtmlAtSelectionEnd('[BEFORE]', true)" value="Insert before">
+<input type="button" onclick="insertHtmlAtSelectionEnd('[AFTER]', false)" value="Insert after"> -->
+
+<script>
+// var range = document.createRange();
+// var textnodes = document.getElementsByTagName("p");
+// range.setStart(textnodes[0].childNodes[0], 79);
+// range.setEnd(textnodes[0].childNodes[0], 86);
+// var sel = window.getSelection();
+// sel.removeAllRanges();
+// sel.addRange(range);
+// range.collapse(true);
+
+// function insertHtmlAtSelectionEnd(html, isBefore) {
+//   var sel = window.getSelection();
+//   var range = window.getSelection().getRangeAt(0);
+//   var saveNode = range.startContainer;
+//
+//   var startOffset = range.startOffset;
+//   var endOffset = range.endOffset;
+//   var nodeData = saveNode.data;
+//   var nodeHTML = saveNode.parentElement.innerHTML;    // parent element innerHTML
+//   var nodeTagName = saveNode.parentElement.tagName;
+//
+//   var myrange = document.createRange();
+//   // var textnodes = document.getElementsByTagName("p");
+//   myrange.setStart(saveNode, 79);
+//   range.setEnd(saveNode, 86);
+//   // var sel = window.getSelection();
+//   sel.removeAllRanges();
+//   sel.addRange(myrange);
+//
+//   // var startNode=range.anchorNode;
+//   // alert(startNode.data);
+// }
+//     sel.removeAllRanges();
+//     sel.addRange(range);
+// function to get the first range;
+// function getSelectionRange() {
+//     var sel;
+//     if (window.getSelection) {
+//         sel = window.getSelection();
+//         if (sel.rangeCount) {
+//             return sel.getRangeAt(0);
+//         }
+//     } else if (document.selection) {
+//         return document.selection.createRange();
+//     }
+//     return null;
+// }
+
+// function insertHtmlAtSelectionEnd(html, isBefore) {
+//     var sel, range, node;
+//     if (window.getSelection) {
+//         sel = window.getSelection();
+//         if (sel.getRangeAt && sel.rangeCount) {
+//             range = window.getSelection().getRangeAt(0);
+//             range.collapse(isBefore);
+//             var saveNode = range.startContainer;
+//             var nodeData = saveNode.data;
+//             var nodeHTML = saveNode.parentElement.innerHTML;
+//             alert(nodeHTML);
+//
+//             // Range.createContextualFragment() would be useful here but was
+//             // until recently non-standard and not supported in all browsers
+//             // (IE9, for one)
+//             var el = document.createElement("div");
+//             el.innerHTML = html;
+//             var frag = document.createDocumentFragment(), node, lastNode;
+//             while ( (node = el.firstChild) ) {
+//               lastNode = frag.appendChild(node);
+//             }
+//             range.insertNode(frag);
+//           }
+//         } else if (document.selection && document.selection.createRange) {
+//           range = document.selection.createRange();
+//           range.collapse(isBefore);
+//           range.pasteHTML(html);
+//         }
+//  }
+</script>
+
   </body>
 </html>
