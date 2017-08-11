@@ -49,6 +49,10 @@ app.on_insert_accounts += create_user
 def test():
     return render_template('index.html')
 
+@app.route('/script')
+def script():
+    return render_template('script.html');
+
 @app.route('/test.js')
 def test_js():
     return render_template('test.js')
@@ -90,7 +94,6 @@ def get_tags_js():
 @app.route('/categories.css')
 def get_tags_css():
     return app.send_static_file('categories.css')
-
 
 
 if __name__ == '__main__':

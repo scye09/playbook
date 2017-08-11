@@ -38,18 +38,25 @@
 
 /* For different color categories, set different color values here */
 .annotator-category-0 {
-    background-color: rgba(191,63,191, .2);
+    background-color: rgba(255, 255, 10, .3);
 }
 
 .annotator-category-1 {
-    background-color: rgba(63,191,63, .2);
+    background-color: rgba(63,191,63, .3);
 }
+
 .annotator-category-2 {
-    background-color: rgba(63,191,191, .2);
+    background-color: rgba(63,191,191, .3);
 }
-/*.annotator-category-3,
-.annotator-category-4,
-.annotator-category-5,
+
+.annotator-category-3 {
+    background-color: rgba(191,63,191, .3);
+}
+
+/*.annotator-category-4 {
+    background-color: rgba(245,155,70, .3);
+}*/
+/*.annotator-category-5,
 .annotator-category-6,
 .annotator-category-7*/
 

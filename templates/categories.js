@@ -13,9 +13,8 @@
       categoryColorClasses: {},
       categoryClass: "annotator-category",
       classForSelectedCategory: "annotator-category-selected",
-      emptyCategory: "Highlight",
-      annotator
-      : 'span.annotator-hl'
+      emptyCategory: "general",
+      annotator: 'span.annotator-hl'
     };
 
     Categories.prototype.events = {
@@ -134,6 +133,10 @@
       for (j = 0, len = ref.length; j < len; j++) {
         category = ref[j];
         categoryHTML += '<span class="' + this.options.categoryClass;
+        if (this.options.categoryColorClasses[category] == undefined) {
+            cssClass = this.options.categoryClass + '-' + j;
+            this.options.categoryColorClasses[category] = cssClass;
+        }
         categoryHTML += ' ' + this.options.categoryColorClasses[category] + '">';
         categoryHTML += category;
         categoryHTML += '</span>';
