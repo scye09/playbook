@@ -89,10 +89,10 @@ def get_current_user():
 @requires_auth('annotations')
 def get_delete_annotations():
     data = []
-    user_id = app.auth.get_request_auth_value()
-    lookup = {'_id': user_id}
-    accounts = app.data.driver.db['accounts']
-    user = accounts.find_one(lookup)
+    # user_id = app.auth.get_request_auth_value()
+    # lookup = {'_id': user_id}
+    # accounts = app.data.driver.db['accounts']
+    # user = accounts.find_one(lookup)
 
     annotations = app.data.driver.db['annotations']
     tags = ["delete"]

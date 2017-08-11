@@ -1,12 +1,14 @@
   jQuery(function ($) {
       var annotation = $(document.body).annotator();
 
+      // callback to get curretn user id
       var xhr = new XMLHttpRequest();
       xhr.open('GET', '/getcurrentuser', false);
       xhr.setRequestHeader('Content-Type', 'application/json');
       xhr.send();
       user_id = JSON.parse(xhr.responseText);
 
+      // call back to hide annotations with "delete" tags
       $.ajax({
         url: 'http://localhost:5000/getdeleteannotations',
         type: "GET",
@@ -60,6 +62,7 @@
         }
        });
 
+      //  helper function to get all descendant textnodes of a node
        function getTextNodes(node) {
          var children = node.childNodes;
          var i;
@@ -78,10 +81,8 @@
          return textNodes;
        }
 
-       function getContainer(textNodes, offset) {
-
-       }
-
+      //  function to reload page after user clicks "save" on annotator-viewer window;
+      // will reload page after creating, updating, and deleting annotations
       var annotator_save = document.getElementsByClassName("annotator-save");
       var i;
       for (i = 0; i < annotator_save.length; i++) {
