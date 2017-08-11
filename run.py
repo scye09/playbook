@@ -63,8 +63,7 @@ def search_annotation():
     query_results = annotations.find(lookup)
     query_items = []
     for result in query_results:
-        tags = result['tags']
-        if not tags:
+        if not result['hidetext']:
             query_items.append(result)
     return JSONEncoder().encode({"total": len(query_items), "rows": query_items})
 
@@ -95,8 +94,7 @@ def get_delete_annotations():
     # user = accounts.find_one(lookup)
 
     annotations = app.data.driver.db['annotations']
-    tags = ["delete"]
-    lookup = {'tags': tags}
+    lookup = {'hidetext': True}
     replaced_annotations = annotations.find(lookup)
     for annotation in replaced_annotations:
         data.append(annotation)

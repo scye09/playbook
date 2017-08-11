@@ -124,6 +124,25 @@
         }
         );
 
-        annotation.annotator('addPlugin', 'Tags');
+        Annotator.Plugin.HideText = function (element) {
+          var myPlugin = {};
+          myPlugin.pluginInit = function () {
+            this.annotator.editor.addField({
+              load: function (field, annotation) {
+                field.innerHTML= "<input id='hidetext' type='checkbox' style='margin-left:5px'> Hide Text <br><br>";
+              },
+              submit: function (field, annotation) {
+                annotation.hidetext = false;
+                var hide = document.getElementById("hidetext");
+                if (hide.checked === true) {
+                  annotation.hidetext = true;
+                }
+                return annotation;
+              }
+            });
+          };
+          return myPlugin;
+        };
+        annotation.annotator('addPlugin', 'HideText');
 
 });
