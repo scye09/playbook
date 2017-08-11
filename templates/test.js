@@ -8,79 +8,6 @@
       xhr.send();
       user_id = JSON.parse(xhr.responseText);
 
-      // call back to hide annotations with "delete" tags
-      $.ajax({
-        url: 'http://localhost:5000/getdeleteannotations',
-        type: "GET",
-        datatype: "json",
-        success: function(data) {
-          var annotations = JSON.parse(data);
-          var i;
-          for (i = 0; i < annotations.length; i++) {
-            var annotation = annotations[i];
-            var paras = document.getElementsByTagName('p');
-            var ranges = annotation.ranges[0];
-            var startOffset = ranges.startOffset;
-            var endOffset = ranges.endOffset;
-            var start = ranges.start;
-            start = "/" + start;
-            var end = ranges.end;
-            end = "/" + end;
-            var d = document.createNSResolver(document.ownerDocument === null ? document.documentElement : document.ownerDocument.documentElement);
-            var startNode = document.evaluate(start, document, d, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-            var startTextNodes = getTextNodes(startNode);
-            var len = 0;
-            var j;
-            for (j = 0; j < startTextNodes.length; j++) {
-              if (len + startTextNodes[j].nodeValue.length >= startOffset) {
-                startNode = startTextNodes[j];
-                startOffset = startOffset - len;
-                break;
-              }
-              len += startTextNodes[j].nodeValue.length;
-            }
-
-            var endNode = document.evaluate(end, document, d, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-            var endTextNodes = getTextNodes(endNode);
-            len = 0;
-            for (j = 0; j < endTextNodes.length; j++) {
-              if (len + endTextNodes[j].nodeValue.length >= endOffset) {
-                endNode = endTextNodes[j];
-                endOffset = endOffset - len;
-                break;
-              }
-              len += endTextNodes[j].nodeValue.length;
-            }
-
-            var range = document.createRange();
-            range.setStart(startNode, startOffset);
-            range.setEnd(endNode, endOffset);
-            var div = document.createElement("div");
-            range.surroundContents(div);
-            div.style.display = "none";
-            }
-        }
-       });
-
-      //  helper function to get all descendant textnodes of a node
-       function getTextNodes(node) {
-         var children = node.childNodes;
-         var i;
-         var textNodes = [];
-         for (i = 0; i < children.length; i++) {
-           if (children[i].nodeType === 3) {
-             textNodes.push(children[i]);
-           } else {
-             var grandchildren = getTextNodes(children[i]);
-             var j;
-             for (j = 0; j < grandchildren.length; j++) {
-               textNodes.push(grandchildren[j]);
-             }
-           }
-         }
-         return textNodes;
-       }
-
       //  function to reload page after user clicks "save" on annotator-viewer window;
       // will reload page after creating, updating, and deleting annotations
       var annotator_save = document.getElementsByClassName("annotator-save");
@@ -124,9 +51,15 @@
         }
         );
 
+        // an annnotator plugin that adds a hide text checkbox
+        // if checked, "hidetext" field of the annotation will be true
         Annotator.Plugin.HideText = function (element) {
           var myPlugin = {};
           myPlugin.pluginInit = function () {
+            this.annotator.subscribe("annotationsLoaded", function (annotations) {
+              hideAnnotations();
+            });
+
             this.annotator.editor.addField({
               load: function (field, annotation) {
                 field.innerHTML= "<input id='hidetext' type='checkbox' style='margin-left:5px'> Hide Text <br><br>";
@@ -144,5 +77,80 @@
           return myPlugin;
         };
         annotation.annotator('addPlugin', 'HideText');
+
+        // call back to hide annotations with "delete" tags
+      function hideAnnotations() {
+        $.ajax({
+          url: '/getdeleteannotations',
+          type: "GET",
+          datatype: "json",
+          success: function(data) {
+            var annotations = JSON.parse(data);
+            var i;
+            for (i = 0; i < annotations.length; i++) {
+              var annotation = annotations[i];
+              var paras = document.getElementsByTagName('p');
+              var ranges = annotation.ranges[0];
+              var startOffset = ranges.startOffset;
+              var endOffset = ranges.endOffset;
+              var start = ranges.start;
+              start = "/" + start;
+              var end = ranges.end;
+              end = "/" + end;
+              var d = document.createNSResolver(document.ownerDocument === null ? document.documentElement : document.ownerDocument.documentElement);
+              var startNode = document.evaluate(start, document, d, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+              var startTextNodes = getTextNodes(startNode);
+              var len = 0;
+              var j;
+              for (j = 0; j < startTextNodes.length; j++) {
+                if (len + startTextNodes[j].nodeValue.length >= startOffset) {
+                  startNode = startTextNodes[j];
+                  startOffset = startOffset - len;
+                  break;
+                }
+                len += startTextNodes[j].nodeValue.length;
+              }
+
+              var endNode = document.evaluate(end, document, d, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+              var endTextNodes = getTextNodes(endNode);
+              len = 0;
+              for (j = 0; j < endTextNodes.length; j++) {
+                if (len + endTextNodes[j].nodeValue.length >= endOffset) {
+                  endNode = endTextNodes[j];
+                  endOffset = endOffset - len;
+                  break;
+                }
+                len += endTextNodes[j].nodeValue.length;
+              }
+
+              var range = document.createRange();
+              range.setStart(startNode, startOffset);
+              range.setEnd(endNode, endOffset);
+              var div = document.createElement("div");
+              range.surroundContents(div);
+              div.style.display = "none";
+              }
+          }
+         });
+       }
+
+        //  helper function to get all descendant textnodes of a node
+         function getTextNodes(node) {
+           var children = node.childNodes;
+           var i;
+           var textNodes = [];
+           for (i = 0; i < children.length; i++) {
+             if (children[i].nodeType === 3) {
+               textNodes.push(children[i]);
+             } else {
+               var grandchildren = getTextNodes(children[i]);
+               var j;
+               for (j = 0; j < grandchildren.length; j++) {
+                 textNodes.push(grandchildren[j]);
+               }
+             }
+           }
+           return textNodes;
+         }
 
 });
