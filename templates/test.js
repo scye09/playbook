@@ -8,7 +8,7 @@
       xhr.send();
       user_id = JSON.parse(xhr.responseText);
 
-      // hideAnnotations();
+      hideAnnotations();
       // insertAnnotations();
 
       //  function to reload page after user clicks "save" on annotator-viewer window;
@@ -60,7 +60,7 @@
           var myPlugin = {};
           myPlugin.pluginInit = function () {
             this.annotator.subscribe("annotationsLoaded", function (annotations) {
-              hideAnnotations();
+              // hideAnnotations();
               insertAnnotations();
             });
 
