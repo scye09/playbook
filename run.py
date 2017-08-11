@@ -7,7 +7,6 @@ from bson.objectid import ObjectId
 from datetime import datetime
 from eve.auth import BasicAuth, requires_auth
 import bcrypt
-import requests
 
 class JSONEncoder(json.JSONEncoder):
     def default(self, o):
@@ -38,6 +37,7 @@ def post_annotation(docs):
         doc['id'] = str(doc['_id'])
         f = {'_id': doc['_id']}
         app.data.driver.db['annotations'].update(f, doc)
+
 
 app = Eve(__name__, template_folder='templates', auth=UserAuth)
 
@@ -82,6 +82,16 @@ def get_current_user():
     accounts = app.data.driver.db['accounts']
     user = accounts.find_one(lookup)
     return json.dumps(user['userid'])
+
+@app.route('/categories.js')
+def get_tags_js():
+    return render_template('categories.js')
+
+@app.route('/categories.css')
+def get_tags_css():
+    return app.send_static_file('categories.css')
+
+
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", threaded=True)
