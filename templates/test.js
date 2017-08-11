@@ -53,7 +53,7 @@
 
         // an annnotator plugin that adds a hide text checkbox
         // if checked, "hidetext" field of the annotation will be true
-        Annotator.Plugin.HideText = function (element) {
+        Annotator.Plugin.ManipulateText = function (element) {
           var myPlugin = {};
           myPlugin.pluginInit = function () {
             this.annotator.subscribe("annotationsLoaded", function (annotations) {
@@ -76,7 +76,7 @@
           };
           return myPlugin;
         };
-        annotation.annotator('addPlugin', 'HideText');
+        annotation.annotator('addPlugin', 'ManipulateText');
 
         // call back to hide annotations with "delete" tags
       function hideAnnotations() {
@@ -89,49 +89,53 @@
             var i;
             for (i = 0; i < annotations.length; i++) {
               var annotation = annotations[i];
-              var paras = document.getElementsByTagName('p');
-              var ranges = annotation.ranges[0];
-              var startOffset = ranges.startOffset;
-              var endOffset = ranges.endOffset;
-              var start = ranges.start;
-              start = "/" + start;
-              var end = ranges.end;
-              end = "/" + end;
-              var d = document.createNSResolver(document.ownerDocument === null ? document.documentElement : document.ownerDocument.documentElement);
-              var startNode = document.evaluate(start, document, d, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-              var startTextNodes = getTextNodes(startNode);
-              var len = 0;
-              var j;
-              for (j = 0; j < startTextNodes.length; j++) {
-                if (len + startTextNodes[j].nodeValue.length >= startOffset) {
-                  startNode = startTextNodes[j];
-                  startOffset = startOffset - len;
-                  break;
-                }
-                len += startTextNodes[j].nodeValue.length;
-              }
-
-              var endNode = document.evaluate(end, document, d, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-              var endTextNodes = getTextNodes(endNode);
-              len = 0;
-              for (j = 0; j < endTextNodes.length; j++) {
-                if (len + endTextNodes[j].nodeValue.length >= endOffset) {
-                  endNode = endTextNodes[j];
-                  endOffset = endOffset - len;
-                  break;
-                }
-                len += endTextNodes[j].nodeValue.length;
-              }
-
-              var range = document.createRange();
-              range.setStart(startNode, startOffset);
-              range.setEnd(endNode, endOffset);
+              var range = getRange(annotation);
               var div = document.createElement("div");
               range.surroundContents(div);
               div.style.display = "none";
               }
           }
          });
+       }
+
+       function getRange(annotation) {
+         var ranges = annotation.ranges[0];
+         var startOffset = ranges.startOffset;
+         var endOffset = ranges.endOffset;
+         var start = ranges.start;
+         start = "/" + start;
+         var end = ranges.end;
+         end = "/" + end;
+         var d = document.createNSResolver(document.ownerDocument === null ? document.documentElement : document.ownerDocument.documentElement);
+         var startNode = document.evaluate(start, document, d, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+         var startTextNodes = getTextNodes(startNode);
+         var len = 0;
+         var j;
+         for (j = 0; j < startTextNodes.length; j++) {
+           if (len + startTextNodes[j].nodeValue.length >= startOffset) {
+             startNode = startTextNodes[j];
+             startOffset = startOffset - len;
+             break;
+           }
+           len += startTextNodes[j].nodeValue.length;
+         }
+
+         var endNode = document.evaluate(end, document, d, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+         var endTextNodes = getTextNodes(endNode);
+         len = 0;
+         for (j = 0; j < endTextNodes.length; j++) {
+           if (len + endTextNodes[j].nodeValue.length >= endOffset) {
+             endNode = endTextNodes[j];
+             endOffset = endOffset - len;
+             break;
+           }
+           len += endTextNodes[j].nodeValue.length;
+         }
+
+         var range = document.createRange();
+         range.setStart(startNode, startOffset);
+         range.setEnd(endNode, endOffset);
+         return range;
        }
 
         //  helper function to get all descendant textnodes of a node
