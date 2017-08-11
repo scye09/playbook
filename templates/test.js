@@ -1,4 +1,5 @@
-  jQuery(function ($) {
+jQuery(function ($) {
+
       var annotation = $(document.body).annotator();
 
       // callback to get curretn user id
@@ -11,21 +12,45 @@
       hideAnnotations();
       // insertAnnotations();
 
-      //  function to reload page after user clicks "save" on annotator-viewer window;
-      // will reload page after creating, updating, and deleting annotations
-      var annotator_save = document.getElementsByClassName("annotator-save");
-      var i;
-      for (i = 0; i < annotator_save.length; i++) {
-        annotator_save[i].addEventListener("click", function() {
-          window.location.reload();
-        });
-      }
+      ////////////Filter Plugin/////////////////
+      // annotation.annotator('addPlugin', 'Filter', {
+      //   filters: [
+      //     {
+      //       label: 'Quote',
+      //       property: 'quote'
+      //     }
+      //   ]
+      // });
 
+      /////////////Tags Plugin/////////////
+      annotation.annotator('addPlugin', 'Tags');
+
+      //ajax call retrieves all groups -- assuming 'admin' belongs to all groups
+      // var xhr = new XMLHttpRequest();
+      // xhr.open('GET', '/accounts?where={"userid":"admin"}&projection={"roles":1}', false);
+      // xhr.setRequestHeader('Content-Type', 'application/json');
+      // xhr.send();
+      // var response = JSON.parse(xhr.responseText);
+      // var groups = response['_items'][0].roles;
+      //
+      //
+      // ////////////Categories Plugin///////////
+      var categories = ["admin", "superuser", "user"];
+      // for (var p=0; p<groups.length; p++) {
+      //   categories.push('to: ' + groups[p]);
+      // }
+      //categories.push('to:'); //to specify recipients by userid
+
+      // var categories = ['admin', 'superuser', 'user'];
+      annotation.annotator('addPlugin','Categories', {
+        category: categories
+      });
+
+
+      //////////////Store Plugin/////////////////////
       annotation.annotator('addPlugin', 'Store', {
-          // The endpoint of the store on your server.
           prefix: '/annotations',
 
-          // Attach the uri of the current page to all annotations to allow search.
           annotationData: {
             'uri': window.location.href
           },
@@ -42,17 +67,7 @@
            },
         });
 
-        annotation.annotator('addPlugin', 'Permissions', {
-          user: user_id,
-          permissions: {
-            'read':   [],
-            'update': [user_id],
-            'delete': [user_id],
-            'admin':  [user_id]
-          }
 
-        }
-        );
 
         // an annnotator plugin that adds a hide text checkbox
         // if checked, "hidetext" field of the annotation will be true
@@ -192,5 +207,34 @@
            }
            return textNodes;
          }
+
+          //reload page every time annotation is updated/saved
+          var saveButton = document.getElementsByClassName("annotator-save");
+
+          // for (var i = 0; i < saveButton.length; i++) {
+              saveButton[0].addEventListener('click', function () {window.location.reload(false);});
+          // }
+
+          //ajax call retrieves userid of current user
+          var req = new XMLHttpRequest();
+          req.open('GET', '/getcurrentuser', false);
+          req.setRequestHeader('Content-Type', 'application/json');
+          req.send();
+          var user_id = req.responseText;
+
+          /////////////////Permissions Plugin//////////////////
+          annotation.annotator('addPlugin', 'Permissions', {
+            showViewPermissionsCheckbox: false,
+            showEditPermissionsCheckbox: false,
+            user: user_id,
+            permissions: {
+              'read':   [],
+              'update': [user_id],
+              'delete': [user_id],
+              'admin':  [user_id]
+            }
+          });
+
+
 
 });

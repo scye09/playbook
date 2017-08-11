@@ -7,7 +7,6 @@ from bson.objectid import ObjectId
 from datetime import datetime
 from eve.auth import BasicAuth, requires_auth
 import bcrypt
-import requests
 
 class JSONEncoder(json.JSONEncoder):
     def default(self, o):
@@ -39,6 +38,7 @@ def post_annotation(docs):
         f = {'_id': doc['_id']}
         app.data.driver.db['annotations'].update(f, doc)
 
+
 app = Eve(__name__, template_folder='templates', auth=UserAuth)
 
 app.on_inserted_annotations += post_annotation
@@ -48,6 +48,10 @@ app.on_insert_accounts += create_user
 # @requires_auth('annotations')
 def test():
     return render_template('index.html')
+
+@app.route('/script')
+def script():
+    return render_template('script.html');
 
 @app.route('/test.js')
 def test_js():
@@ -105,6 +109,15 @@ def get_insert_annotations():
     for annotation in replaced_annotations:
         data.append(annotation)
     return JSONEncoder().encode(data);
+
+@app.route('/categories.js')
+def get_tags_js():
+    return render_template('categories.js')
+
+@app.route('/categories.css')
+def get_tags_css():
+    return app.send_static_file('categories.css')
+
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", threaded=True)

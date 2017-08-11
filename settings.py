@@ -10,6 +10,8 @@ ALLOW_UNKNOWN = True
 HATEOAS = False
 IF_MATCH = False
 
+MONGO_QUERY_BLACKLIST = ['$where']
+
 annotationSchema = {
 
 }
@@ -33,10 +35,10 @@ accountsSchema = {
     }
 }
 
-
 accounts = {
     'schema': accountsSchema
 }
+
 
 DOMAIN = {
     'annotations': annotations,
