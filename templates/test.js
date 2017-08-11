@@ -74,28 +74,28 @@ jQuery(function ($) {
         Annotator.Plugin.ManipulateText = function (element) {
           var myPlugin = {};
           myPlugin.pluginInit = function () {
-            this.annotator.subscribe("annotationsLoaded", function (annotations) {
-              // hideAnnotations();
-              insertAnnotations();
-            });
+            // this.annotator.subscribe("annotationsLoaded", function (annotations) {
+            //   // hideAnnotations();
+            //   insertAnnotations();
+            // });
 
             this.annotator.editor.addField({
               load: function (field, annotation) {
                 var html = "<input id='hidetext' type='checkbox' style='margin-left:5px'> Hide Text <br><br>";
-                html += "<input id='inserttext' type='checkbox' style='margin-left:5px'> Insert Text <br><br>";
+                // html += "<input id='inserttext' type='checkbox' style='margin-left:5px'> Insert Text <br><br>";
                 field.innerHTML= html;
               },
               submit: function (field, annotation) {
                 annotation.hidetext = false;
-                annotation.inserttext = false;
+                // annotation.inserttext = false;
                 var hide = document.getElementById("hidetext");
-                var insert = document.getElementById("inserttext");
+                // var insert = document.getElementById("inserttext");
                 if (hide.checked === true) {
                   annotation.hidetext = true;
                 }
-                if (inserttext.checked === true) {
-                  annotation.inserttext = true;
-                }
+                // if (inserttext.checked === true) {
+                //   annotation.inserttext = true;
+                // }
                 return annotation;
               }
             });
@@ -124,30 +124,30 @@ jQuery(function ($) {
          });
        }
 
-       function insertAnnotations() {
-         $.ajax({
-           url: '/getinsertannotations',
-           type: "GET",
-           datatype: "json",
-           success: function(data) {
-             var annotations = JSON.parse(data);
-             var i;
-             for (i = 0; i < annotations.length; i++) {
-               var annotation = annotations[i];
-               var range = getRange(annotation);
-               range.deleteContents();
-
-               var el = document.createElement("div");
-               el.innerHTML = annotation.quote + " " + annotation.text;
-               var frag = document.createDocumentFragment(), node, lastNode;
-               while ( (node = el.firstChild) ) {
-                 lastNode = frag.appendChild(node);
-                }
-               range.insertNode(frag);
-               }
-           }
-          });
-        }
+      //  function insertAnnotations() {
+      //    $.ajax({
+      //      url: '/getinsertannotations',
+      //      type: "GET",
+      //      datatype: "json",
+      //      success: function(data) {
+      //        var annotations = JSON.parse(data);
+      //        var i;
+      //        for (i = 0; i < annotations.length; i++) {
+      //          var annotation = annotations[i];
+      //          var range = getRange(annotation);
+      //          range.deleteContents();
+       //
+      //          var el = document.createElement("div");
+      //          el.innerHTML = annotation.quote + " " + annotation.text;
+      //          var frag = document.createDocumentFragment(), node, lastNode;
+      //          while ( (node = el.firstChild) ) {
+      //            lastNode = frag.appendChild(node);
+      //           }
+      //          range.insertNode(frag);
+      //          }
+      //      }
+      //     });
+      //   }
 
        function getRange(annotation) {
          var ranges = annotation.ranges[0];
