@@ -8,8 +8,8 @@
       xhr.send();
       user_id = JSON.parse(xhr.responseText);
 
-      hideAnnotations();
-      insertAnnotations();
+      // hideAnnotations();
+      // insertAnnotations();
 
       //  function to reload page after user clicks "save" on annotator-viewer window;
       // will reload page after creating, updating, and deleting annotations
@@ -59,10 +59,10 @@
         Annotator.Plugin.ManipulateText = function (element) {
           var myPlugin = {};
           myPlugin.pluginInit = function () {
-            // this.annotator.subscribe("annotationsLoaded", function (annotations) {
-            //   hideAnnotations();
-            //   insertAnnotations();
-            // });
+            this.annotator.subscribe("annotationsLoaded", function (annotations) {
+              hideAnnotations();
+              insertAnnotations();
+            });
 
             this.annotator.editor.addField({
               load: function (field, annotation) {
@@ -120,10 +120,15 @@
              for (i = 0; i < annotations.length; i++) {
                var annotation = annotations[i];
                var range = getRange(annotation);
-               var div = document.createElement("div");
-               div.innerHTML = annotation.quote + " " + annotation.text;
                range.deleteContents();
-               range.surroundContents(div);
+
+               var el = document.createElement("div");
+               el.innerHTML = annotation.quote + " " + annotation.text;
+               var frag = document.createDocumentFragment(), node, lastNode;
+               while ( (node = el.firstChild) ) {
+                 lastNode = frag.appendChild(node);
+                }
+               range.insertNode(frag);
                }
            }
           });
