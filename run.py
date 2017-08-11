@@ -100,8 +100,6 @@ def get_delete_annotations():
     replaced_annotations = annotations.find(lookup)
     for annotation in replaced_annotations:
         data.append(annotation)
-    # print("Annotations to be replaced: ")
-    # print(data)
     return JSONEncoder().encode(data);
 
 if __name__ == '__main__':

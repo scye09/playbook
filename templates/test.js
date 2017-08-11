@@ -26,22 +26,61 @@
             end = "/" + end;
             var d = document.createNSResolver(document.ownerDocument === null ? document.documentElement : document.ownerDocument.documentElement);
             var startNode = document.evaluate(start, document, d, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+            var startTextNodes = getTextNodes(startNode);
+            var len = 0;
+            var j;
+            for (j = 0; j < startTextNodes.length; j++) {
+              if (len + startTextNodes[j].nodeValue.length >= startOffset) {
+                startNode = startTextNodes[j];
+                startOffset = startOffset - len;
+                break;
+              }
+              len += startTextNodes[j].nodeValue.length;
+            }
+
             var endNode = document.evaluate(end, document, d, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+            var endTextNodes = getTextNodes(endNode);
+            len = 0;
+            for (j = 0; j < endTextNodes.length; j++) {
+              if (len + endTextNodes[j].nodeValue.length >= endOffset) {
+                endNode = endTextNodes[j];
+                endOffset = endOffset - len;
+                break;
+              }
+              len += endTextNodes[j].nodeValue.length;
+            }
 
             var range = document.createRange();
-            range.setStart(startNode.firstChild, startOffset);
-            range.setEnd(endNode.firstChild, endOffset);
-
-            var el = document.createElement("div");
-            el.innerHTML = "[DELETED]";
-            var frag = document.createDocumentFragment(), node, lastNode;
-            while ( (node = el.firstChild) ) {
-                lastNode = frag.appendChild(node);
-              }
-            range.insertNode(frag);
-          }
+            range.setStart(startNode, startOffset);
+            range.setEnd(endNode, endOffset);
+            var div = document.createElement("div");
+            range.surroundContents(div);
+            div.style.display = "none";
+            }
         }
        });
+
+       function getTextNodes(node) {
+         var children = node.childNodes;
+         var i;
+         var textNodes = [];
+         for (i = 0; i < children.length; i++) {
+           if (children[i].nodeType === 3) {
+             textNodes.push(children[i]);
+           } else {
+             var grandchildren = getTextNodes(children[i]);
+             var j;
+             for (j = 0; j < grandchildren.length; j++) {
+               textNodes.push(grandchildren[j]);
+             }
+           }
+         }
+         return textNodes;
+       }
+
+       function getContainer(textNodes, offset) {
+
+       }
 
       var annotator_save = document.getElementsByClassName("annotator-save");
       var i;
@@ -60,11 +99,7 @@
             'uri': window.location.href
           },
 
-          // This will perform a "search" action when the plugin loads. Will
-          // request the last 20 annotations for the current url.
-          // eg. /store/endpoint/search?limit=20&uri=http://this/document/only
           loadFromSearch: {
-          //  'limit': 20,
            'uri': window.location.href
           },
 
@@ -89,15 +124,5 @@
         );
 
         annotation.annotator('addPlugin', 'Tags');
-
-        // var annotatorhls = document.getElementsByClassName("annotator-hl");
-        // if (annotatorhls.length === 0) {
-        //   alert("empty");
-        // }
-
-        // var elements = document.getElementsByTagName('span');
-        // if (elements.length != 0) {
-        //   alert("not empty");
-        // }
 
 });
