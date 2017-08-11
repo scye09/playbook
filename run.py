@@ -67,8 +67,11 @@ def search_annotation():
     query_results = annotations.find(lookup)
     query_items = []
     for result in query_results:
-        if not result['hidetext'] and not result['inserttext']:
-            query_items.append(result)
+        if 'hidetext' in result and result['hidetext']:
+            continue;
+        if 'inserttext' in result and result['inserttext']:
+            continue;
+        query_items.append(result)
     return JSONEncoder().encode({"total": len(query_items), "rows": query_items})
 
 @app.route('/login')
