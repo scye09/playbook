@@ -75,6 +75,7 @@
         results.push((function() {
           var l, len2, ref1, results1;
           ref1 = annotation.highlights;
+          console.log(annotation.highlights);
           if (annotation.highlights != undefined) {
           results1 = [];
           for (l = 0, len2 = ref1.length; l < len2; l++) {
