@@ -62,8 +62,9 @@ def search_annotation():
     annotations = app.data.driver.db['annotations']
     query_results = annotations.find(lookup)
     query_items = []
+    # annotations.delete_many(lookup)
     for result in query_results:
-        if not result['hidetext'] and not result['inserttext']:
+        if not result['hidetext']:
             query_items.append(result)
     return JSONEncoder().encode({"total": len(query_items), "rows": query_items})
 
