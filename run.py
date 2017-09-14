@@ -68,8 +68,8 @@ def search_annotation():
     query_items = []
     # annotations.delete_many(lookup)
     for result in query_results:
-        if 'hidetext' in result and result['hidetext']:
-            continue;
+        # if 'hidetext' in result and result['hidetext']:
+        #     continue;
         # if 'inserttext' in result and result['inserttext']:
         #     continue;
         query_items.append(result)
