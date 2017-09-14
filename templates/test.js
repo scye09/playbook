@@ -9,8 +9,7 @@ jQuery(function ($) {
       xhr.send();
       user_id = JSON.parse(xhr.responseText);
 
-      hideAnnotations();
-      // insertAnnotations();
+      // hideAnnotations();
 
       ////////////Filter Plugin/////////////////
       // annotation.annotator('addPlugin', 'Filter', {
@@ -35,13 +34,13 @@ jQuery(function ($) {
       //
       //
       // ////////////Categories Plugin///////////
-      var categories = ["admin", "superuser", "user"];
+      // var categories = ["admin", "superuser", "user"];
       // for (var p=0; p<groups.length; p++) {
       //   categories.push('to: ' + groups[p]);
       // }
       //categories.push('to:'); //to specify recipients by userid
 
-      // var categories = ['admin', 'superuser', 'user'];
+      var categories = ['admin', 'superuser', 'user'];
       annotation.annotator('addPlugin','Categories', {
         category: categories
       });
@@ -74,10 +73,12 @@ jQuery(function ($) {
         Annotator.Plugin.ManipulateText = function (element) {
           var myPlugin = {};
           myPlugin.pluginInit = function () {
-            // this.annotator.subscribe("annotationsLoaded", function (annotations) {
-            //   // hideAnnotations();
-            //   insertAnnotations();
-            // });
+            this.annotator.subscribe("annotationsLoaded", function (annotations) {
+              hideAnnotations();
+            });
+            this.annotator.subscribe("annotationCreated", function (annotation) {
+              window.location.reload(false);
+            });
 
             this.annotator.editor.addField({
               load: function (field, annotation) {
@@ -105,6 +106,13 @@ jQuery(function ($) {
         annotation.annotator('addPlugin', 'ManipulateText');
 
         // call back to hide annotations with "delete" tags
+      function hideAnnotation(annotation) {
+        var range = getRange(annotation);
+        var div = document.createElement("div");
+        range.surroundContents(div);
+        div.style.display = "none";
+      }
+
       function hideAnnotations() {
         $.ajax({
           url: '/getdeleteannotations',
@@ -117,8 +125,34 @@ jQuery(function ($) {
               var annotation = annotations[i];
               var range = getRange(annotation);
               var div = document.createElement("div");
+              div.setAttribute('id', "div " + annotation._id);
               range.surroundContents(div);
               div.style.display = "none";
+              div.style.backgroundColor = "lightblue";
+              var btn_class = "fa fa-arrow-circle-o-right";
+              var btn = "<i class=\"" + btn_class + "\" id=" + annotation._id + "></i>";
+              $(btn).insertAfter(div);
+              }
+              var btns = document.getElementsByClassName(btn_class);
+              for (i = 0; i < btns.length; i++) {
+                btns[i].classList.add("rotator");
+                btns[i].addEventListener("click", function() {
+                  var div_id = "div " + this.id;
+                  var related_div = document.getElementById(div_id);
+                  if (related_div.style.display === "none") {
+                    related_div.style.display = "inline";
+                  } else {
+                    related_div.style.display = "none";
+                  }
+
+                  if (this.classList.contains("rotator")) {
+                    this.classList.remove("rotator");
+                    this.classList.add("antirotator");
+                  } else if (this.classList.contains("antirotator")){
+                    this.classList.remove("antirotator");
+                    this.classList.add("rotator");
+                  }
+                });
               }
           }
          });
@@ -209,10 +243,10 @@ jQuery(function ($) {
          }
 
           //reload page every time annotation is updated/saved
-          var saveButton = document.getElementsByClassName("annotator-save");
+          // var saveButton = document.getElementsByClassName("annotator-save");
 
           // for (var i = 0; i < saveButton.length; i++) {
-              saveButton[0].addEventListener('click', function () {window.location.reload(false);});
+              // saveButton[0].addEventListener('click', function () {window.location.reload(false);});
           // }
 
           //ajax call retrieves userid of current user

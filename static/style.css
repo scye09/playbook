@@ -1,0 +1,11 @@
+.hidden_annotations {
+  background-color: blue;
+}
+.rotator {
+  transform: rotateX(180deg);
+  transition-duration:1s;
+}
+.antirotator {
+  transform: rotateY(180deg);
+  transition-duration:1s;
+}
