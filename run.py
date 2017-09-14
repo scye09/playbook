@@ -68,10 +68,6 @@ def search_annotation():
     query_items = []
     # annotations.delete_many(lookup)
     for result in query_results:
-        # if 'hidetext' in result and result['hidetext']:
-        #     continue;
-        # if 'inserttext' in result and result['inserttext']:
-        #     continue;
         query_items.append(result)
     return JSONEncoder().encode({"total": len(query_items), "rows": query_items})
 
@@ -91,28 +87,6 @@ def get_current_user():
     accounts = app.data.driver.db['accounts']
     user = accounts.find_one(lookup)
     return json.dumps(user['userid'])
-
-@app.route('/getdeleteannotations')
-@requires_auth('annotations')
-def get_delete_annotations():
-    data = []
-    annotations = app.data.driver.db['annotations']
-    lookup = {'hidetext': True}
-    replaced_annotations = annotations.find(lookup)
-    for annotation in replaced_annotations:
-        data.append(annotation)
-    return JSONEncoder().encode(data);
-
-# @app.route('/getinsertannotations')
-# @requires_auth('annotations')
-# def get_insert_annotations():
-#     data = []
-#     annotations = app.data.driver.db['annotations']
-#     lookup = {'inserttext': True}
-#     replaced_annotations = annotations.find(lookup)
-#     for annotation in replaced_annotations:
-#         data.append(annotation)
-#     return JSONEncoder().encode(data);
 
 @app.route('/categories.js')
 def get_tags_js():

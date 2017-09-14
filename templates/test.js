@@ -8,6 +8,7 @@ jQuery(function ($) {
       req.setRequestHeader('Content-Type', 'application/json');
       req.send();
       var user_id = req.responseText;
+      alert(user_id);
 
       /////////////////Permissions Plugin//////////////////
       annotation.annotator('addPlugin', 'Permissions', {
@@ -21,9 +22,6 @@ jQuery(function ($) {
           'admin':  [user_id]
         }
       });
-
-
-      // hideAnnotations();
 
       ////////////Filter Plugin/////////////////
       // annotation.annotator('addPlugin', 'Filter', {
