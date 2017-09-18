@@ -8,7 +8,6 @@ jQuery(function ($) {
       req.setRequestHeader('Content-Type', 'application/json');
       req.send();
       var user_id = req.responseText;
-      alert(user_id);
 
       /////////////////Permissions Plugin//////////////////
       annotation.annotator('addPlugin', 'Permissions', {
@@ -78,8 +77,6 @@ jQuery(function ($) {
            },
         });
 
-
-
         // an annnotator plugin that adds a hide text checkbox
         // if checked, "hidetext" field of the annotation will be true
         // annotations with "hidetext" being true will be hidden
@@ -90,12 +87,15 @@ jQuery(function ($) {
             this.annotator.subscribe("annotationsLoaded", function (annotations) {
               var i;
               var btn_class = "fa fa-arrow-circle-o-right";
+              var btn_left_class = "fa fa-arrow-circle-o-left";
+
               for (i = 0; i < annotations.length; i++) {
                 var annotation = annotations[i];
-                if (annotation["hidetext"]===true) {
+                if (annotation.hidetext===true) {
                   var highlights = annotation.highlights;
-                  var btn_id = "btn " + annotation['_id'];
+                  var btn_id = "btn " + annotation._id;
                   var btn = "<i class=\"" + btn_class + "\" id=\"" + btn_id + "\"></i>";
+
                   var j;
                   for (j = 0; j < highlights.length; j++) {
                     highlights[j].style.backgroundColor = "lightblue";
@@ -103,10 +103,30 @@ jQuery(function ($) {
                     highlights[j].setAttribute('id', annotation['_id']);
                     $(btn).insertAfter(highlights[j]);
                   }
+                } else if (annotation.inserttext === true) {
+                  var tCtx = document.getElementById('textCanvas').getContext('2d');
+                  var inserted = annotation.text + " ";
+                  tCtx.canvas.width = tCtx.measureText(inserted).width;
+                  tCtx.font="13px Arial";
+                  tCtx.fillText(annotation.text, 0, 15);
+                  var imageSrc = tCtx.canvas.toDataURL();
+                  var annoImage = "<img src=" + imageSrc + " id=" + annotation._id + " class=\"insertedtext\">";
+
+                  var btn_id = "btn " + annotation._id;
+                  var btn = "<i class=\"" + btn_left_class + "\" id=\"" + btn_id + "\"></i>";
+
+                  var highlights = annotation.highlights;
+                  var j;
+                  for (j = 0; j < highlights.length; j++) {
+                    highlights[j].style.backgroundColor = "orange";
+                    $(annoImage).insertBefore(highlights[j]);
+                    $(btn).insertBefore(highlights[j]);
+                  }
                 }
               }
 
               var btns = document.getElementsByClassName(btn_class);
+
               for (i = 0; i < btns.length; i++) {
                 btns[i].classList.add("rotator");
                 btns[i].addEventListener("click", function() {
@@ -127,6 +147,29 @@ jQuery(function ($) {
                   }
                 });
               }
+
+              var btns = document.getElementsByClassName(btn_left_class);
+              for (i = 0; i < btns.length; i++) {
+                btns[i].classList.add("rotator");
+                btns[i].addEventListener("click", function() {
+                  var div_id = this.id.split(" ")[1];
+                  var related_div = document.getElementById(div_id);
+                  if (related_div.style.display === "none") {
+                    related_div.style.display = "inline";
+                  } else {
+                    related_div.style.display = "none";
+                  }
+
+                  if (this.classList.contains("rotator")) {
+                    this.classList.remove("rotator");
+                    this.classList.add("antirotator");
+                  } else if (this.classList.contains("antirotator")){
+                    this.classList.remove("antirotator");
+                    this.classList.add("rotator");
+                  }
+                });
+              }
+
             });
 
             this.annotator.subscribe("annotationCreated", function (annotation) {
@@ -136,20 +179,20 @@ jQuery(function ($) {
             this.annotator.editor.addField({
               load: function (field, annotation) {
                 var html = "<input id='hidetext' type='checkbox' style='margin-left:5px'> Hide Text <br><br>";
-                // html += "<input id='inserttext' type='checkbox' style='margin-left:5px'> Insert Text <br><br>";
+                html += "<input id='inserttext' type='checkbox' style='margin-left:5px'> Insert Text <br><br>";
                 field.innerHTML= html;
               },
               submit: function (field, annotation) {
                 annotation.hidetext = false;
-                // annotation.inserttext = false;
+                annotation.inserttext = false;
                 var hide = document.getElementById("hidetext");
-                // var insert = document.getElementById("inserttext");
+                var insert = document.getElementById("inserttext");
                 if (hide.checked === true) {
                   annotation.hidetext = true;
                 }
-                // if (inserttext.checked === true) {
-                //   annotation.inserttext = true;
-                // }
+                if (inserttext.checked === true) {
+                  annotation.inserttext = true;
+                }
                 return annotation;
               }
             });
