@@ -98,17 +98,19 @@ jQuery(function ($) {
 
                   var j;
                   for (j = 0; j < highlights.length; j++) {
-                    highlights[j].style.backgroundColor = "lightblue";
+                    highlights[j].style.backgroundColor = "orange";
                     highlights[j].style.display="none";
                     highlights[j].setAttribute('id', annotation['_id']);
                     $(btn).insertAfter(highlights[j]);
                   }
                 } else if (annotation.inserttext === true) {
                   var tCtx = document.getElementById('textCanvas').getContext('2d');
-                  var inserted = annotation.text + " ";
+                  var inserted = " " + annotation.text + " ";
                   tCtx.canvas.width = tCtx.measureText(inserted).width;
-                  tCtx.font="13px Arial";
-                  tCtx.fillText(annotation.text, 0, 15);
+                  // tCtx.font="13px Arial";
+                  tCtx.fillStyle="blue";
+                  tCtx.fillText(inserted, 0, 18);
+
                   var imageSrc = tCtx.canvas.toDataURL();
                   var annoImage = "<img src=" + imageSrc + " id=" + annotation._id + " class=\"insertedtext\">";
 
@@ -118,7 +120,7 @@ jQuery(function ($) {
                   var highlights = annotation.highlights;
                   var j;
                   for (j = 0; j < highlights.length; j++) {
-                    highlights[j].style.backgroundColor = "orange";
+                    highlights[j].style.backgroundColor = "lightblue";
                     $(annoImage).insertBefore(highlights[j]);
                     $(btn).insertBefore(highlights[j]);
                   }
@@ -174,6 +176,28 @@ jQuery(function ($) {
 
             this.annotator.subscribe("annotationCreated", function (annotation) {
               window.location.reload(false);
+            });
+
+            this.annotator.subscribe("annotationEditorShown", function(editor, annotation) {
+              var allDeletedNodes = document.getElementsByClassName("insertedtext");
+              if(window.getSelection()) {
+                var sel = window.getSelection();
+                var range = sel.getRangeAt(0);
+                for (var i = 0; i < allDeletedNodes.length; i++) {
+                  var elRange = document.createRange();
+                  elRange.selectNode(allDeletedNodes[i]);
+                  var compare = range.compareBoundaryPoints(Range.START_TO_START, elRange);
+                  alert(compare);
+                  compare = range.compareBoundaryPoints(Range.END_TO_END, elRange);
+                  alert(compare);
+                  if (range.compareBoundaryPoints(Range.START_TO_START, elRange) <= 0
+                          && range.compareBoundaryPoints(Range.END_TO_END, elRange) >= 0) {
+                      alert("I am selected");
+                      editor.hide();
+                      break;
+                  }
+                }
+              }
             });
 
             this.annotator.editor.addField({
