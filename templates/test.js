@@ -101,6 +101,7 @@ jQuery(function ($) {
                     highlights[j].style.backgroundColor = "orange";
                     highlights[j].style.display="none";
                     highlights[j].setAttribute('id', annotation['_id']);
+                    highlights[j].classList.add('hiddentext');
                     $(btn).insertAfter(highlights[j]);
                   }
                 } else if (annotation.inserttext === true) {
@@ -179,25 +180,42 @@ jQuery(function ($) {
             });
 
             this.annotator.subscribe("annotationEditorShown", function(editor, annotation) {
-              var allDeletedNodes = document.getElementsByClassName("insertedtext");
-              if(window.getSelection()) {
-                var sel = window.getSelection();
-                var range = sel.getRangeAt(0);
-                for (var i = 0; i < allDeletedNodes.length; i++) {
-                  var elRange = document.createRange();
-                  elRange.selectNode(allDeletedNodes[i]);
-                  var compare = range.compareBoundaryPoints(Range.START_TO_START, elRange);
-                  alert(compare);
-                  compare = range.compareBoundaryPoints(Range.END_TO_END, elRange);
-                  alert(compare);
-                  if (range.compareBoundaryPoints(Range.START_TO_START, elRange) <= 0
-                          && range.compareBoundaryPoints(Range.END_TO_END, elRange) >= 0) {
-                      alert("I am selected");
-                      editor.hide();
-                      break;
-                  }
+              // Warning messages will pop up if users select texts that includes whole annotations whose attributes
+              // "hidden" or "inserted" are true;
+              // Warning messages cannot be shown if just part of such annotations are selected
+              var temporary = document.getElementsByClassName("annotator-hl-temporary");
+              var allDeletedNodes = document.getElementsByClassName("hiddentext");
+              var allInsertedNodes = document.getElementsByClassName("insertedtext");
+
+              if (temporary.length >= 2) {
+                var startRange = document.createRange();
+                startRange.selectNode(temporary[0]);
+                var endRange = document.createRange();
+                endRange.selectNode(temporary[temporary.length - 1]);
+                for (var j = 0; j < allDeletedNodes.length; j++) {
+                  var deleteRange = document.createRange();
+                  deleteRange.selectNode(allDeletedNodes[j]);
+                  if (startRange.compareBoundaryPoints(Range.START_TO_START, deleteRange) <= 0
+                            && endRange.compareBoundaryPoints(Range.END_TO_END, deleteRange) >= 0) {
+                        alert("Error: Your selection includes deleted scripts!");
+                        editor.hide();
+                        break;
+                    }
+                }
+
+                for (var j = 0; j < allInsertedNodes.length; j++) {
+                  var insertRange = document.createRange();
+                  insertRange.selectNode(allInsertedNodes[j]);
+                  if (startRange.compareBoundaryPoints(Range.START_TO_START, insertRange) <= 0
+                            && endRange.compareBoundaryPoints(Range.END_TO_END, insertRange) >= 0) {
+                        alert("Error: Your selection includes inserted scripts!");
+                        editor.hide();
+                        break;
+                    }
                 }
               }
+
+
             });
 
             this.annotator.editor.addField({
