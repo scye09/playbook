@@ -1,7 +1,6 @@
 Annotator.Plugin.UserTags = function(element) {
   var userTagsPlugin = {};
   userTagsPlugin.pluginInit = function () {
-
     this.annotator.editor.addField({
       load: function (field, annotation) {
         var html = "<br><input id='sendAnno' type='checkbox' style='margin-left:5px' onclick='showuser();'> Send annotation to someone <br><br>";
@@ -14,7 +13,7 @@ Annotator.Plugin.UserTags = function(element) {
 
         html += "<select id='userdropdown' style='display:none'>";
         for (var i = 0; i < users.length; i++) {
-          var option = "<option>" + users[i] +"</option>";
+          var option = "<option value=\"" + users[i] + "\">" + users[i] +"</option>";
           html += option;
         }
         html += "</select>";
@@ -23,7 +22,12 @@ Annotator.Plugin.UserTags = function(element) {
 
       },
       submit: function (field, annotation) {
-
+        var send = document.getElementById("sendAnno");
+        if (send.checked === true) {
+          var sendTo = document.getElementById("userdropdown").value;
+          annotation.sendTo = sendTo;
+          annotation.permissions.read.push(sendTo);
+        }
         return annotation;
       }
     });

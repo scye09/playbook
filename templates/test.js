@@ -35,7 +35,7 @@ jQuery(function ($) {
           showEditPermissionsCheckbox: false,
           user: user_id,
           permissions: {
-            'read':   [],
+            'read':   [user_id],
             'update': [user_id],
             'delete': [user_id],
             'admin':  [user_id]
@@ -48,12 +48,16 @@ jQuery(function ($) {
         //////////////Insert or Delete script Plugin///////////////////
         annotation.annotator('addPlugin', 'ManipulateText');
 
-        function showuser() {
-          var userdropdown=document.getElementById("userdropdown");
-          if (userdropdown.style.display == 'none') {
-            userdropdown.style.display="inline";
-          } else {
-            userdropdown.style.display="none";
+
+        ////////////Filter Plugin/////////////////
+      annotation.annotator('addPlugin', 'Filter', {
+        filters: [
+          {
+            label: 'Send From',
+            property: 'permissions[\'admin\']'
           }
-        }
+        ]
+      });
+
+
 });

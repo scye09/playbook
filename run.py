@@ -67,8 +67,16 @@ def search_annotation():
     query_results = annotations.find(lookup)
     query_items = []
     # annotations.delete_many(lookup)
+
+    user_id = app.auth.get_request_auth_value()
+    lookup = {'_id': user_id}
+    accounts = app.data.driver.db['accounts']
+    user = accounts.find_one(lookup)
+    user_name = user['userid']
+    print (user_name)
     for result in query_results:
-        query_items.append(result)
+        if user_name in result['permissions']['read']:
+            query_items.append(result)
     return JSONEncoder().encode({"total": len(query_items), "rows": query_items})
 
 @app.route('/login')

@@ -120,7 +120,6 @@ Annotator.Plugin.ManipulateText = function (element) {
             continue;
           } else {
             alert("Error: Your selection includes deleted scripts!");
-            editor.hide();
             break;
           }
         }
@@ -131,7 +130,6 @@ Annotator.Plugin.ManipulateText = function (element) {
           if (startRange.compareBoundaryPoints(Range.START_TO_START, insertRange) <= 0
                     && endRange.compareBoundaryPoints(Range.END_TO_END, insertRange) >= 0) {
                 alert("Error: Your selection includes inserted scripts!");
-                editor.hide();
                 break;
             }
         }
