@@ -88,6 +88,14 @@ def get_current_user():
     user = accounts.find_one(lookup)
     return json.dumps(user['userid'])
 
+@app.route('/getallusers')
+def get_all_users():
+    accounts = app.data.driver.db['accounts'].find()
+    users = []
+    for account in accounts:
+        users.append(account['userid'])
+    return json.dumps(users)
+
 @app.route('/categories.js')
 def get_tags_js():
     return render_template('categories.js')
@@ -95,6 +103,14 @@ def get_tags_js():
 @app.route('/categories.css')
 def get_tags_css():
     return app.send_static_file('categories.css')
+
+@app.route('/manipulateText.js')
+def get_manipulateText_js():
+    return render_template('manipulateText.js')
+
+@app.route('/userTags.js')
+def get_usertags_js():
+    return render_template('userTags.js')
 
 
 if __name__ == '__main__':
