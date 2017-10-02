@@ -16,15 +16,21 @@ Annotator.Plugin.ManipulateText = function (element) {
           var highlights = annotation.highlights;
           var btn_id = "btn " + annotation._id;
           var btn = "<i title=\"Click to view deleted script!\" class=\"" + btn_class + "\" id=\"" + btn_id + "\"></i>";
+          $(btn).insertAfter(highlights[highlights.length - 1]);
 
-          var j;
-          for (j = 0; j < highlights.length; j++) {
-            // highlights[j].style.backgroundColor = "orange";
-            highlights[j].style.display="none";
-            highlights[j].setAttribute('id', annotation['_id']);
+          for(var j = 0; j < highlights.length; j++) {
+            highlights[j].style.display = "none";
             highlights[j].classList.add('hiddentext');
-            $(btn).insertAfter(highlights[j]);
+            highlights[j].classList.add(annotation['_id']);
           }
+          // var j;
+          // for (j = 0; j < highlights.length; j++) {
+          //   // highlights[j].style.backgroundColor = "orange";
+          //   highlights[j].style.display="none";
+          //   highlights[j].setAttribute('id', annotation['_id']);
+          //   highlights[j].classList.add('hiddentext');
+          //   // $(btn).insertAfter(highlights[j]);
+          // }
         } else if (annotation.inserttext === true) {
           var tCtx = document.getElementById('textCanvas').getContext('2d');
           var inserted = " " + annotation.text + " ";
@@ -55,13 +61,16 @@ Annotator.Plugin.ManipulateText = function (element) {
         btns[i].classList.add("rotator");
         btns[i].addEventListener("click", function() {
           var div_id = this.id.split(" ")[1];
-          var related_div = document.getElementById(div_id);
-          if (related_div.style.display === "none") {
-            related_div.style.display = "inline";
-            this.title="Click to hide deleted script!";
-          } else {
-            related_div.style.display = "none";
-            this.title="Click to view deleted script!";
+          var related_divs = document.getElementsByClassName(div_id);
+          for (var t = 0; t < related_divs.length; t++) {
+            var related_div = related_divs[t];
+            if (related_div.style.display === "none") {
+              related_div.style.display = "inline";
+              this.title="Click to hide deleted script!";
+            } else {
+              related_div.style.display = "none";
+              this.title="Click to view deleted script!";
+            }
           }
 
           if (this.classList.contains("rotator")) {

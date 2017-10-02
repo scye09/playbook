@@ -6,6 +6,9 @@
       allAnnoButton.addEventListener('click', function() {
         for (var i = 0; i < annotations.length; i++) {
           var annotation = annotations[i];
+          if (annotation.inserttext === true) {
+            continue;
+          }
           var highlights = annotation.highlights;
           for (var j = 0; j < highlights.length; j++) {
             highlights[j].style.backgroundColor = "rgba(255, 255, 10, 0.3)";
@@ -20,7 +23,11 @@
           var isMine = false;
           var admins = annotation.permissions.admin;
           var highlights = annotation.highlights;
-          
+
+          if (annotation.inserttext === true) {
+            continue;
+          }
+
           for (var j = 0; j < admins.length; j++) {
             if (admins[j] === user_id) {
               isMine = true;
@@ -37,11 +44,16 @@
           }
         }
       });
+
       var filterButton = document.getElementById("filterButton");
       filterButton.addEventListener('click', function() {
         var fromWhom = document.getElementById("fromWhom").value;
 
         for (var a = 0; a < annotations.length; a++) {
+          if (annotations[a].inserttext === true) {
+            continue;
+          }
+
           var admins = annotations[a].permissions.admin;
           var highlights = annotations[a].highlights;
           var isFromWhom = false;
