@@ -1,13 +1,8 @@
 jQuery(function ($) {
 
       var annotation = $(document.body).annotator();
-
-      //ajax call retrieves userid of current user
-      var req = new XMLHttpRequest();
-      req.open('GET', '/getcurrentuser', false);
-      req.setRequestHeader('Content-Type', 'application/json');
-      req.send();
-      var user_id = JSON.parse(req.responseText);
+      var user_id = getCurrentUser();
+      populateFilterButtons();
 
       //////////////Store Plugin/////////////////////
       annotation.annotator('addPlugin', 'Store', {
@@ -43,21 +38,34 @@ jQuery(function ($) {
         });
 
         //////////////User Tags Plugin/////////////////////
-        annotation.annotator('addPlugin', 'UserTags');
+        annotation.annotator('addPlugin', 'UserTags', user_id);
 
         //////////////Insert or Delete script Plugin///////////////////
         annotation.annotator('addPlugin', 'ManipulateText');
 
+      function getCurrentUser() {
+        var req = new XMLHttpRequest();
+        req.open('GET', '/getcurrentuser', false);
+        req.setRequestHeader('Content-Type', 'application/json');
+        req.send();
+        var user_id = JSON.parse(req.responseText);
+        return user_id;
+      }
 
-        ////////////Filter Plugin/////////////////
-      annotation.annotator('addPlugin', 'Filter', {
-        filters: [
-          {
-            label: 'Send From',
-            property: 'permissions[\'admin\']'
-          }
-        ]
-      });
+      function populateFilterButtons() {
+        var req = new XMLHttpRequest();
+        req.open('GET', '/getallusers', false);
+        req.setRequestHeader('Content-Type', 'application/json');
+        req.send();
+        var users = JSON.parse(req.responseText);
 
+        var filterAnnos = document.getElementById("fromWhom");
+        html = "";
+        for (var i = 0; i < users.length; i++) {
+          var option = "<option value=\"" + users[i] + "\">" + users[i] +"</option>";
+          html += option;
+        }
+        filterAnnos.innerHTML= html;
+      }
 
 });

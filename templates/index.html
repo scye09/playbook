@@ -2,6 +2,11 @@
 <html>
   <head>
     <title></title>
+    <style>
+    .hiddentext {
+      background-color: orange;
+    }
+    </style>
   </head>
   <body>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
@@ -11,7 +16,6 @@
     <script src="/test.js"></script>
     <script src="/userTags.js"></script>
     <script src="/manipulateText.js"></script>
-		<link href="/categories.css" rel="stylesheet">
     <link href="/static/style.css" rel="stylesheet">
     <h4>Test</h4>
     <p>The giant panda (Ailuropoda melanoleuca, literally "black and white cat-foot"; Chinese: 大熊猫;
@@ -26,6 +30,12 @@
       Sichuan, but also in neighbouring Shaanxi and Gansu.[9] As a result of farming, deforestation,
       and other development, the giant panda has been driven out of the lowland areas where it once lived.
     </p>
+    <div>
+      <button id="AllAnno">All Annotations</button>
+      <button id="myAnno">Only My Annotations</button>
+      Only see annotations from: <select id="fromWhom"></select>
+      <button id="filterButton">Filter</button>
+    </div>
 
     <canvas id='textCanvas' height=20 style="display:none"></canvas>
  <script>
@@ -37,6 +47,7 @@
      userdropdown.style.display="none";
    }
  }
+ 
  </script>
   </body>
 </html>

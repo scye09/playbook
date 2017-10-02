@@ -15,11 +15,11 @@ Annotator.Plugin.ManipulateText = function (element) {
         if (annotation.hidetext===true) {
           var highlights = annotation.highlights;
           var btn_id = "btn " + annotation._id;
-          var btn = "<i class=\"" + btn_class + "\" id=\"" + btn_id + "\"></i>";
+          var btn = "<i title=\"Click to view deleted script!\" class=\"" + btn_class + "\" id=\"" + btn_id + "\"></i>";
 
           var j;
           for (j = 0; j < highlights.length; j++) {
-            highlights[j].style.backgroundColor = "orange";
+            // highlights[j].style.backgroundColor = "orange";
             highlights[j].style.display="none";
             highlights[j].setAttribute('id', annotation['_id']);
             highlights[j].classList.add('hiddentext');
@@ -37,14 +37,14 @@ Annotator.Plugin.ManipulateText = function (element) {
           var annoImage = "<img src=" + imageSrc + " id=" + annotation._id + " class=\"insertedtext\">";
 
           var btn_id = "btn " + annotation._id;
-          var btn = "<i class=\"" + btn_left_class + "\" id=\"" + btn_id + "\"></i>";
+          var btn = "<i title=\"Click to hide inserted script!\" class=\"" + btn_left_class + "\" id=\"" + btn_id + "\"></i>";
 
           var highlights = annotation.highlights;
+          $(annoImage).insertBefore(highlights[0]);
+          $(btn).insertBefore(highlights[0]);
           var j;
           for (j = 0; j < highlights.length; j++) {
-            highlights[j].style.backgroundColor = "lightblue";
-            $(annoImage).insertBefore(highlights[j]);
-            $(btn).insertBefore(highlights[j]);
+            highlights[j].style.backgroundColor = "transparent";
           }
         }
       }
@@ -58,8 +58,10 @@ Annotator.Plugin.ManipulateText = function (element) {
           var related_div = document.getElementById(div_id);
           if (related_div.style.display === "none") {
             related_div.style.display = "inline";
+            this.title="Click to hide deleted script!";
           } else {
             related_div.style.display = "none";
+            this.title="Click to view deleted script!";
           }
 
           if (this.classList.contains("rotator")) {
@@ -80,8 +82,10 @@ Annotator.Plugin.ManipulateText = function (element) {
           var related_div = document.getElementById(div_id);
           if (related_div.style.display === "none") {
             related_div.style.display = "inline";
+            this.title="Click to hide inserted script!";
           } else {
             related_div.style.display = "none";
+            this.title="Click to view inserted script!";
           }
 
           if (this.classList.contains("rotator")) {
@@ -107,7 +111,7 @@ Annotator.Plugin.ManipulateText = function (element) {
       var allDeletedNodes = document.getElementsByClassName("hiddentext");
       var allInsertedNodes = document.getElementsByClassName("insertedtext");
 
-      if (temporary.length > 0) {
+      if (temporary.length >= 2) {
         var startRange = document.createRange();
         startRange.selectNode(temporary[0]);
         var endRange = document.createRange();
@@ -134,7 +138,6 @@ Annotator.Plugin.ManipulateText = function (element) {
             }
         }
       }
-
 
     });
 
