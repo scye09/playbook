@@ -1,6 +1,5 @@
 jQuery(function ($) {
-
-      var annotation = $(document.body).annotator();
+      var annotation = $("#canAnnotate").annotator();
       var user_id = getCurrentUser();
       populateFilterButtons();
 
@@ -67,5 +66,4 @@ jQuery(function ($) {
         }
         filterAnnos.innerHTML= html;
       }
-
 });

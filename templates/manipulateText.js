@@ -23,24 +23,42 @@ Annotator.Plugin.ManipulateText = function (element) {
             highlights[j].classList.add('hiddentext');
             highlights[j].classList.add(annotation['_id']);
           }
-          
-        } else if (annotation.inserttext === true) {
-          var tCtx = document.getElementById('textCanvas').getContext('2d');
-          var inserted = " " + annotation.text + " ";
-          tCtx.canvas.width = tCtx.measureText(inserted).width;
-          // tCtx.font="13px Arial";
-          tCtx.fillStyle="blue";
-          tCtx.fillText(inserted, 0, 18);
 
-          var imageSrc = tCtx.canvas.toDataURL();
-          var annoImage = "<img src=" + imageSrc + " id=" + annotation._id + " class=\"insertedtext\">";
+        } else if (annotation.inserttext === true) {
+          var words = annotation.text.split(" ");
+
+          // var tCtx = document.getElementById('textCanvas').getContext('2d');
+          // var inserted = " " + annotation.text + " ";
+          //
+          // tCtx.canvas.width = tCtx.measureText(inserted).width;
+          // tCtx.font="12pt Times New Roman";
+          // tCtx.fillStyle="blue";
+          // tCtx.fillText(inserted, 0, 18);
+          //
+          // var imageSrc = tCtx.canvas.toDataURL();
+          // var annoImage = "<img src=" + imageSrc + " id=" + annotation._id + " class=\"insertedtext\">";
 
           var btn_id = "btn " + annotation._id;
           var btn = "<i title=\"Click to hide inserted script!\" class=\"" + btn_left_class + "\" id=\"" + btn_id + "\"></i>";
 
           var highlights = annotation.highlights;
-          $(annoImage).insertBefore(highlights[0]);
+          // $(annoImage).insertBefore(highlights[0]);
+          for (var a = 0; a < words.length; a++) {
+            var word = " " + words[a] + " "
+            var tCtx = document.getElementById('textCanvas').getContext('2d');
+            var inserted = " " + annotation.text + " ";
+
+            tCtx.canvas.width = tCtx.measureText(word).width;
+            tCtx.font="12pt Times New Roman";
+            tCtx.fillStyle="blue";
+            tCtx.fillText(word, 0, 18);
+
+            var imageSrc = tCtx.canvas.toDataURL();
+            var annoImage = "<img src=" + imageSrc + " class=\"" + annotation._id + " insertedtext\">";
+            $(annoImage).insertBefore(highlights[0]);
+          }
           $(btn).insertBefore(highlights[0]);
+
           var j;
           for (j = 0; j < highlights.length; j++) {
             highlights[j].style.backgroundColor = "transparent";
@@ -81,13 +99,16 @@ Annotator.Plugin.ManipulateText = function (element) {
         btns[i].classList.add("rotator");
         btns[i].addEventListener("click", function() {
           var div_id = this.id.split(" ")[1];
-          var related_div = document.getElementById(div_id);
-          if (related_div.style.display === "none") {
-            related_div.style.display = "inline";
-            this.title="Click to hide inserted script!";
-          } else {
-            related_div.style.display = "none";
-            this.title="Click to view inserted script!";
+          var related_divs = document.getElementsByClassName(div_id);
+          for (var t = 0; t < related_divs.length; t++) {
+            var related_div = related_divs[t];
+            if (related_div.style.display === "none") {
+              related_div.style.display = "inline";
+              this.title="Click to hide inserted script!";
+            } else {
+              related_div.style.display = "none";
+              this.title="Click to view inserted script!";
+            }
           }
 
           if (this.classList.contains("rotator")) {

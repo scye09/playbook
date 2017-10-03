@@ -12,12 +12,14 @@
             for (var b = 0; b < highlights.length; b++) {
               highlights[b].style.backgroundColor = "transparent";
             }
-            var insertedtext = document.getElementById(annotation._id);
-            insertedtext.style.display = "inline";
-          }
-
-          for (var j = 0; j < highlights.length; j++) {
-            highlights[j].style.backgroundColor = "rgba(255, 255, 10, 0.3)";
+            var insertedtext = document.getElementsByClassName(annotation._id);
+            for (var e = 0; e < insertedtext.length; e++) {
+              insertedtext[e].style.display = "inline";
+            }
+          } else {
+            for (var j = 0; j < highlights.length; j++) {
+              highlights[j].style.backgroundColor = "rgba(255, 255, 10, 0.3)";
+            }
           }
         }
       });
@@ -40,11 +42,15 @@
             for (var b = 0; b < highlights.length; b++) {
               highlights[b].style.backgroundColor = "transparent";
             }
-            var insertedtext = document.getElementById(annotation._id);
+            var insertedtext = document.getElementsByClassName(annotation._id);
             if (isMine) {
-              insertedtext.style.display="inline";
+              for (var e = 0; e < insertedtext.length; e++) {
+                insertedtext[e].style.display = "inline";
+              }
             } else {
-              insertedtext.style.display="none";
+              for (var e = 0; e < insertedtext.length; e++) {
+                insertedtext[e].style.display = "none";
+              }
             }
           } else {
             if (isMine === false) {
@@ -83,11 +89,15 @@
               highlights[b].style.backgroundColor = "transparent";
             }
 
-            var insertedtext = document.getElementById(annotations[a]._id);
+            var insertedtext = document.getElementsByClassName(annotations[a]._id);
             if (isFromWhom) {
-              insertedtext.style.display="inline";
+              for (var e = 0; e < insertedtext.length; e++) {
+                insertedtext[e].style.display = "inline";
+              }
             } else {
-              insertedtext.style.display="none";
+              for (var e = 0; e < insertedtext.length; e++) {
+                insertedtext[e].style.display = "none";
+              }
             }
           } else {
             if (isFromWhom === true) {
@@ -104,9 +114,23 @@
       });
     });
 
+    this.annotator.subscribe("annotationEditorShown", function (editor, annotation) {
+      var sendAnnocheckbox = document.getElementById("sendAnno");
+      var userdropdown=document.getElementById("userdropdown");
+      sendAnnocheckbox.addEventListener('change', function() {
+        if (this.checked) {
+          userdropdown.style.display="inline";
+        } else {
+          userdropdown.style.display="none";
+        }
+      });
+    });
+
     this.annotator.editor.addField({
       load: function (field, annotation) {
-        var html = "<br><input id='sendAnno' type='checkbox' style='margin-left:5px' onclick='showuser();'> Send annotation to someone <br><br>";
+        var html = "<br><input id='sendAnno' type='checkbox' style='margin-left:5px' "
+        + "> Send annotation to someone <br><br>";
+
         //ajax call retrieves userids of all users
         var req = new XMLHttpRequest();
         req.open('GET', '/getallusers', false);
