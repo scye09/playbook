@@ -6,10 +6,16 @@
       allAnnoButton.addEventListener('click', function() {
         for (var i = 0; i < annotations.length; i++) {
           var annotation = annotations[i];
-          if (annotation.inserttext === true) {
-            continue;
-          }
           var highlights = annotation.highlights;
+
+          if (annotation.inserttext === true) {
+            for (var b = 0; b < highlights.length; b++) {
+              highlights[b].style.backgroundColor = "transparent";
+            }
+            var insertedtext = document.getElementById(annotation._id);
+            insertedtext.style.display = "inline";
+          }
+
           for (var j = 0; j < highlights.length; j++) {
             highlights[j].style.backgroundColor = "rgba(255, 255, 10, 0.3)";
           }
@@ -24,22 +30,31 @@
           var admins = annotation.permissions.admin;
           var highlights = annotation.highlights;
 
-          if (annotation.inserttext === true) {
-            continue;
-          }
-
           for (var j = 0; j < admins.length; j++) {
             if (admins[j] === user_id) {
               isMine = true;
             }
           }
-          if (isMine === false) {
+
+          if (annotation.inserttext === true) {
             for (var b = 0; b < highlights.length; b++) {
               highlights[b].style.backgroundColor = "transparent";
             }
+            var insertedtext = document.getElementById(annotation._id);
+            if (isMine) {
+              insertedtext.style.display="inline";
+            } else {
+              insertedtext.style.display="none";
+            }
           } else {
-            for (var b = 0; b < highlights.length; b++) {
-              highlights[b].style.backgroundColor = "rgba(255, 255, 10, 0.3)";
+            if (isMine === false) {
+              for (var b = 0; b < highlights.length; b++) {
+                highlights[b].style.backgroundColor = "transparent";
+              }
+            } else {
+              for (var b = 0; b < highlights.length; b++) {
+                highlights[b].style.backgroundColor = "rgba(255, 255, 10, 0.3)";
+              }
             }
           }
         }
@@ -48,12 +63,11 @@
       var filterButton = document.getElementById("filterButton");
       filterButton.addEventListener('click', function() {
         var fromWhom = document.getElementById("fromWhom").value;
+        if (fromWhom === 'Z') {
+          return;
+        }
 
         for (var a = 0; a < annotations.length; a++) {
-          if (annotations[a].inserttext === true) {
-            continue;
-          }
-
           var admins = annotations[a].permissions.admin;
           var highlights = annotations[a].highlights;
           var isFromWhom = false;
@@ -62,13 +76,28 @@
               isFromWhom = true;
             }
           }
-          if (isFromWhom === true) {
-            for (var d = 0; d < highlights.length; d++) {
-              highlights[d].style.backgroundColor = "rgba(255, 255, 10, 0.3)";
+
+          if (annotations[a].inserttext === true) {
+            var highlights = annotations[a].highlights;
+            for (var b = 0; b < highlights.length; b++) {
+              highlights[b].style.backgroundColor = "transparent";
+            }
+
+            var insertedtext = document.getElementById(annotations[a]._id);
+            if (isFromWhom) {
+              insertedtext.style.display="inline";
+            } else {
+              insertedtext.style.display="none";
             }
           } else {
-            for (var d = 0; d < highlights.length; d++) {
-              highlights[d].style.backgroundColor = "transparent";
+            if (isFromWhom === true) {
+              for (var d = 0; d < highlights.length; d++) {
+                highlights[d].style.backgroundColor = "rgba(255, 255, 10, 0.3)";
+              }
+            } else {
+              for (var d = 0; d < highlights.length; d++) {
+                highlights[d].style.backgroundColor = "transparent";
+              }
             }
           }
         }
@@ -86,20 +115,22 @@
         var users = JSON.parse(req.responseText);
 
         html += "<select id='userdropdown' style='display:none'>";
+        html += '<option value="Z">-select-</option>';
         for (var i = 0; i < users.length; i++) {
           var option = "<option value=\"" + users[i] + "\">" + users[i] +"</option>";
           html += option;
         }
         html += "</select>";
         field.innerHTML= html;
-
       },
       submit: function (field, annotation) {
         var send = document.getElementById("sendAnno");
         if (send.checked === true) {
           var sendTo = document.getElementById("userdropdown").value;
-          annotation.sendTo = sendTo;
-          annotation.permissions.read.push(sendTo);
+          if (sendTo !== 'Z') {
+            annotation.sendTo = sendTo;
+            annotation.permissions.read.push(sendTo);
+          }
         }
         return annotation;
       }

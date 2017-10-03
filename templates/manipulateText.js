@@ -23,14 +23,7 @@ Annotator.Plugin.ManipulateText = function (element) {
             highlights[j].classList.add('hiddentext');
             highlights[j].classList.add(annotation['_id']);
           }
-          // var j;
-          // for (j = 0; j < highlights.length; j++) {
-          //   // highlights[j].style.backgroundColor = "orange";
-          //   highlights[j].style.display="none";
-          //   highlights[j].setAttribute('id', annotation['_id']);
-          //   highlights[j].classList.add('hiddentext');
-          //   // $(btn).insertAfter(highlights[j]);
-          // }
+          
         } else if (annotation.inserttext === true) {
           var tCtx = document.getElementById('textCanvas').getContext('2d');
           var inserted = " " + annotation.text + " ";

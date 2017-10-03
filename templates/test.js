@@ -60,7 +60,7 @@ jQuery(function ($) {
         var users = JSON.parse(req.responseText);
 
         var filterAnnos = document.getElementById("fromWhom");
-        html = "";
+        html = '<option value="Z">-select-</option>';;
         for (var i = 0; i < users.length; i++) {
           var option = "<option value=\"" + users[i] + "\">" + users[i] +"</option>";
           html += option;
