@@ -6,3 +6,7 @@
   transform: rotateY(180deg);
   transition-duration:1s;
 }
+.fa-sub {
+    position: relative;
+    top:-0.5em;
+}

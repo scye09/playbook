@@ -7,8 +7,9 @@ Annotator.Plugin.ManipulateText = function (element) {
   myPlugin.pluginInit = function () {
     this.annotator.subscribe("annotationsLoaded", function (annotations) {
       var i;
-      var btn_class = "fa fa-arrow-circle-o-right";
-      var btn_left_class = "fa fa-arrow-circle-o-left";
+      // var btn_class = "fa fa-sub fa-arrow-circle-o-right";
+      var btn_class = "fa fa-commenting-o hide";
+      var btn_left_class = "fa fa-eye-slash insert";
 
       for (i = 0; i < annotations.length; i++) {
         var annotation = annotations[i];
@@ -27,22 +28,10 @@ Annotator.Plugin.ManipulateText = function (element) {
         } else if (annotation.inserttext === true) {
           var words = annotation.text.split(" ");
 
-          // var tCtx = document.getElementById('textCanvas').getContext('2d');
-          // var inserted = " " + annotation.text + " ";
-          //
-          // tCtx.canvas.width = tCtx.measureText(inserted).width;
-          // tCtx.font="12pt Times New Roman";
-          // tCtx.fillStyle="blue";
-          // tCtx.fillText(inserted, 0, 18);
-          //
-          // var imageSrc = tCtx.canvas.toDataURL();
-          // var annoImage = "<img src=" + imageSrc + " id=" + annotation._id + " class=\"insertedtext\">";
-
           var btn_id = "btn " + annotation._id;
           var btn = "<i title=\"Click to hide inserted script!\" class=\"" + btn_left_class + "\" id=\"" + btn_id + "\"></i>";
 
           var highlights = annotation.highlights;
-          // $(annoImage).insertBefore(highlights[0]);
           for (var a = 0; a < words.length; a++) {
             var word = " " + words[a] + " "
             var tCtx = document.getElementById('textCanvas').getContext('2d');
@@ -69,7 +58,6 @@ Annotator.Plugin.ManipulateText = function (element) {
       var btns = document.getElementsByClassName(btn_class);
 
       for (i = 0; i < btns.length; i++) {
-        btns[i].classList.add("rotator");
         btns[i].addEventListener("click", function() {
           var div_id = this.id.split(" ")[1];
           var related_divs = document.getElementsByClassName(div_id);
@@ -84,19 +72,18 @@ Annotator.Plugin.ManipulateText = function (element) {
             }
           }
 
-          if (this.classList.contains("rotator")) {
-            this.classList.remove("rotator");
-            this.classList.add("antirotator");
-          } else if (this.classList.contains("antirotator")){
-            this.classList.remove("antirotator");
-            this.classList.add("rotator");
+          if (this.classList.contains("fa-commenting-o")) {
+            this.classList.remove("fa-commenting-o");
+            this.classList.add("fa-eye-slash");
+          } else if (this.classList.contains("fa-eye-slash")){
+            this.classList.remove("fa-eye");
+            this.classList.add("fa-commenting-o");
           }
         });
       }
 
       var btns = document.getElementsByClassName(btn_left_class);
       for (i = 0; i < btns.length; i++) {
-        btns[i].classList.add("rotator");
         btns[i].addEventListener("click", function() {
           var div_id = this.id.split(" ")[1];
           var related_divs = document.getElementsByClassName(div_id);
@@ -111,13 +98,14 @@ Annotator.Plugin.ManipulateText = function (element) {
             }
           }
 
-          if (this.classList.contains("rotator")) {
-            this.classList.remove("rotator");
-            this.classList.add("antirotator");
-          } else if (this.classList.contains("antirotator")){
-            this.classList.remove("antirotator");
-            this.classList.add("rotator");
+          if (this.classList.contains("fa-commenting-o")) {
+            this.classList.remove("fa-commenting-o");
+            this.classList.add("fa-eye-slash");
+          } else if (this.classList.contains("fa-eye-slash")){
+            this.classList.remove("fa-eye");
+            this.classList.add("fa-commenting-o");
           }
+
         });
       }
 
@@ -161,7 +149,6 @@ Annotator.Plugin.ManipulateText = function (element) {
             }
         }
       }
-
     });
 
     this.annotator.editor.addField({
