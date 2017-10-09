@@ -151,6 +151,21 @@ Annotator.Plugin.ManipulateText = function (element) {
       }
     });
 
+    this.annotator.subscribe("annotationDeleted", function(annotation) {
+      if (annotation.hidetext === true || annotation.inserttext === true) {
+        var btn_id = "btn " + annotation._id;
+        var button = document.getElementById(btn_id);
+        button.parentNode.removeChild(button);
+      }
+      if (annotation.inserttext === true) {
+        var anno_classname = annotation._id + " insertedtext";
+        var anno_imgs = document.getElementsByClassName(anno_classname);
+        for (var i = anno_imgs.length - 1; i >= 0; i--) {
+          anno_imgs[i].parentNode.removeChild(anno_imgs[i]);
+        }
+      }
+    });
+
     this.annotator.editor.addField({
       load: function (field, annotation) {
         var html = "<br><input id='hidetext' type='checkbox' style='margin-left:5px'> Hide Text <br><br>";
