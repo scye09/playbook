@@ -9,15 +9,15 @@ Annotator.Plugin.ManipulateText = function (element) {
       var i;
       // var btn_class = "fa fa-sub fa-arrow-circle-o-right";
       var btn_class = "fa fa-commenting-o hide";
-      var btn_left_class = "fa fa-eye-slash insert";
+      var btn_left_class = "fa fa-scissors insert";
 
       for (i = 0; i < annotations.length; i++) {
         var annotation = annotations[i];
         if (annotation.hidetext===true) {
           var highlights = annotation.highlights;
           var btn_id = "btn " + annotation._id;
-          var btn = "<i title=\"Click to view deleted script!\" class=\"" + btn_class + "\" id=\"" + btn_id + "\"></i>";
-          $(btn).insertAfter(highlights[highlights.length - 1]);
+          var btn = '<i title="Click to view deleted script!" class="' + btn_class + '" id="' + btn_id + '" style="font-size: 70%; position:relative; top:-0.5em"></i>';
+          $(btn).insertBefore(highlights[0]);
 
           for(var j = 0; j < highlights.length; j++) {
             highlights[j].style.display = "none";
@@ -29,16 +29,19 @@ Annotator.Plugin.ManipulateText = function (element) {
           var words = annotation.text.split(" ");
 
           var btn_id = "btn " + annotation._id;
-          var btn = "<i title=\"Click to hide inserted script!\" class=\"" + btn_left_class + "\" id=\"" + btn_id + "\"></i>";
+          var btn = '<i title="Click to hide inserted script!" class="' + btn_left_class + '" id="' + btn_id + '" " style="font-size:70%; position:relative; top:-0.5em"></i>';
 
           var highlights = annotation.highlights;
+          $(btn).insertBefore(highlights[0]);
           for (var a = 0; a < words.length; a++) {
             var word = " " + words[a] + " "
             var tCtx = document.getElementById('textCanvas').getContext('2d');
             var inserted = " " + annotation.text + " ";
 
+            tCtx.font='12pt "Times New Roman"';
             tCtx.canvas.width = tCtx.measureText(word).width;
-            tCtx.font="12pt Times New Roman";
+            tCtx.font='12pt "Times New Roman"';
+            // tCtx.font="12pt Times New Roman";
             tCtx.fillStyle="blue";
             tCtx.fillText(word, 0, 18);
 
@@ -46,7 +49,7 @@ Annotator.Plugin.ManipulateText = function (element) {
             var annoImage = "<img src=" + imageSrc + " class=\"" + annotation._id + " insertedtext\">";
             $(annoImage).insertBefore(highlights[0]);
           }
-          $(btn).insertBefore(highlights[0]);
+          // $(btn).insertBefore(highlights[0]);
 
           var j;
           for (j = 0; j < highlights.length; j++) {
@@ -74,9 +77,9 @@ Annotator.Plugin.ManipulateText = function (element) {
 
           if (this.classList.contains("fa-commenting-o")) {
             this.classList.remove("fa-commenting-o");
-            this.classList.add("fa-eye-slash");
-          } else if (this.classList.contains("fa-eye-slash")){
-            this.classList.remove("fa-eye");
+            this.classList.add("fa-scissors");
+          } else if (this.classList.contains("fa-scissors")){
+            this.classList.remove("fa-scissors");
             this.classList.add("fa-commenting-o");
           }
         });
@@ -100,9 +103,9 @@ Annotator.Plugin.ManipulateText = function (element) {
 
           if (this.classList.contains("fa-commenting-o")) {
             this.classList.remove("fa-commenting-o");
-            this.classList.add("fa-eye-slash");
-          } else if (this.classList.contains("fa-eye-slash")){
-            this.classList.remove("fa-eye");
+            this.classList.add("fa-scissors");
+          } else if (this.classList.contains("fa-scissors")){
+            this.classList.remove("fa-scissors");
             this.classList.add("fa-commenting-o");
           }
 

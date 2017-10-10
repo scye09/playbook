@@ -1,5 +1,5 @@
 from eve import Eve
-from flask import redirect, render_template, render_template_string, request, current_app as app
+from flask import redirect, render_template, g, render_template_string, request, current_app as app
 import json
 from flask import jsonify
 from flask_pymongo import PyMongo
@@ -45,11 +45,13 @@ app.on_inserted_annotations += post_annotation
 app.on_insert_accounts += create_user
 
 @app.route('/test')
-# @requires_auth('annotations')
+@requires_auth('annotations')
 def test():
+    print (g.user)
     return render_template('index.html')
 
 @app.route('/script')
+@requires_auth('annotations')
 def script():
     return render_template('script.html');
 
@@ -73,7 +75,6 @@ def search_annotation():
     accounts = app.data.driver.db['accounts']
     user = accounts.find_one(lookup)
     user_name = user['userid']
-    print (user_name)
     for result in query_results:
         if user_name in result['permissions']['read']:
             query_items.append(result)
