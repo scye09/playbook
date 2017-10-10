@@ -1,6 +1,8 @@
 jQuery(function ($) {
       var annotation = $("#canAnnotate").annotator();
-      var user_id = getCurrentUser();
+      var user_id = document.getElementById('user').value;
+      // alert(user_id);
+      // var user_id = getCurrentUser();
       populateFilterButtons();
 
       //////////////Store Plugin/////////////////////

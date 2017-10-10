@@ -47,8 +47,7 @@ app.on_insert_accounts += create_user
 @app.route('/test')
 @requires_auth('annotations')
 def test():
-    print (g.user)
-    return render_template('index.html')
+    return render_template('index.html', user=g.user)
 
 @app.route('/script')
 @requires_auth('annotations')

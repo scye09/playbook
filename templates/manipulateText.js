@@ -34,7 +34,7 @@ Annotator.Plugin.ManipulateText = function (element) {
           var highlights = annotation.highlights;
           $(btn).insertBefore(highlights[0]);
           for (var a = 0; a < words.length; a++) {
-            var word = " " + words[a] + " "
+            var word = words[a] + " "
             var tCtx = document.getElementById('textCanvas').getContext('2d');
             var inserted = " " + annotation.text + " ";
 
