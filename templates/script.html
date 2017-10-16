@@ -8,25 +8,28 @@
     <script src="http://assets.annotateit.org/annotator/v1.2.5/annotator-full.min.js"></script>
     <link rel="stylesheet" href="http://assets.annotateit.org/annotator/v1.2.5/annotator.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="shortcut icon" href="http://s3.amazonaws.com/libapps/customers/220/images/favicon.ico" type="image/png">
     <script src="/test.js"></script>
     <script src="/userTags.js"></script>
     <script src="/manipulateText.js"></script>
-    <link href="/static/style.css" rel="stylesheet">
+
     <br/>
 
+    <input id='user' value="{{ user }}" style="display: none">
     <div id="filter">
       <button id="AllAnno" align="left">All Annotations</button>
       <button id="myAnno" style="margin-left:70px">My Annotations</button>
       <span style="margin-left:90px">View annotations from:</span>
       <select id="fromWhom"></select>
       <button id="filterButton">Filter</button>
+
     </div>
 
     <div id="canAnnotate">
     <h1>A Midsummer Night's Dream</h1>
     <h2>ACT I</h2>
     <h3>SCENE I. Athens. The palace of THESEUS.</h3>
-    <p>Enter THESEUS, HIPPOLYTA, PHILOSTRATE, and Attendants<br/>
+    <p style="line-height: 28px">Enter THESEUS, HIPPOLYTA, PHILOSTRATE, and Attendants<br/>
     THESEUS <br/>
     Now, fair Hippolyta, our nuptial hour<br/>
     Draws on apace; four happy days bring in<br/>

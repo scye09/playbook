@@ -52,7 +52,7 @@ def test():
 @app.route('/script')
 @requires_auth('annotations')
 def script():
-    return render_template('script.html');
+    return render_template('script.html', user=g.user);
 
 @app.route('/test.js')
 def test_js():
